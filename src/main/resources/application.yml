@@ -1,0 +1,19 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: pragma-client-api
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pragma-api?serverTimezone=America/Bogota&useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: root
+    password: 
+pragma:
+  swagger:
+    controller: com.pragma.controller
