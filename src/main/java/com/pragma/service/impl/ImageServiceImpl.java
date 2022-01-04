@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.pragma.entity.Image;
 import com.pragma.entity.validate.ImageValidate;
 import com.pragma.repository.ImageRepository;
+import com.pragma.service.ClientService;
 import com.pragma.service.ImageService;
 import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
@@ -31,6 +32,9 @@ public class ImageServiceImpl implements ImageService{
 	
 	@Autowired
 	ImageRepository imageRepository;	
+	
+	@Autowired
+	ClientService clientService;
 	
 	public ImageServiceImpl() {
 	}
@@ -80,6 +84,7 @@ public class ImageServiceImpl implements ImageService{
 		ImageValidate.message(image);
 		if(!testClient(image.getIdClient()))
 			throw new PragmaException("El cliente con el id "+image.getIdClient()+" ya tiene una imagen asignada.");
+		clientService.findById(image.getIdClient());
 		image = image(image, multipartFile);
 		image = imageRepository.save(image);
 		if(image == null)
@@ -90,7 +95,12 @@ public class ImageServiceImpl implements ImageService{
 	@Override
 	public Image update(Image image, MultipartFile multipartFile) {
 		ImageValidate.message(image);
-		findById(image.getId());
+		Image aux = findById(image.getId());
+		if(aux.getIdClient() != image.getIdClient()) {
+			clientService.findById(image.getIdClient());
+			if(!testClient(image.getIdClient()))
+				throw new PragmaException("El cliente con el id "+image.getIdClient()+" ya tiene una imagen asignada.");
+		}	
 		image = image(image, multipartFile);
 		image = imageRepository.save(image);
 		if(image == null)
@@ -106,6 +116,7 @@ public class ImageServiceImpl implements ImageService{
 			findById(id);
 		}catch (PragmaException e) {
 			LOGGER.info("delete(Long id)", e);
+			return true;
 		}
 		throw new PragmaException("No se ha eliminado la imagen con el id "+id+".");
 	}
