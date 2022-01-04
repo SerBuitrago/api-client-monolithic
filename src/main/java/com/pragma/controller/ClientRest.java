@@ -24,6 +24,10 @@ public class ClientRest {
 	@Autowired
 	ClientService clientService;
 	
+	public ClientRest(ClientService clientService) {
+		this.clientService = clientService;
+	}
+
 	@GetMapping(value = { "/{id}", "/find/id/{id}" })
 	public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findById(id));

@@ -23,8 +23,11 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	ClientRepository clientEntityRepository;
-
 	
+	public ClientServiceImpl(ClientRepository clientEntityRepository) {
+		this.clientEntityRepository = clientEntityRepository;
+	}
+
 	@Override
 	public Client findById(Long id) {
 		if(!Pragma.isLong(id))
