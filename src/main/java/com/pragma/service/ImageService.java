@@ -12,8 +12,6 @@ public interface ImageService {
 	
 	Image findByClient(Long idClient);
 	
-	String view(Long id);
-	
 	List<Image> findAll();
 	
 	Image save(Image image, MultipartFile multipartFile);

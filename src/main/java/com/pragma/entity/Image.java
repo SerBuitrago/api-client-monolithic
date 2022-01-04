@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +29,13 @@ public class Image {
 	@Column(name = "id_client", nullable = false)
 	private Long idClient;
 	
-	@Column(name = "path", nullable = false, length = 500)
-	private String path;
+	@Column(name = "contentType", nullable = false)
+	private String contentType;
+	
+	@Column(name = "filename", nullable = false)
+	private String filename;
+	
+	@Lob
+	@Column(name = "photo", nullable = false)
+	private String photo;
 }

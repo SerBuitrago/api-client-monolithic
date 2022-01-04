@@ -40,11 +40,6 @@ public class ImageRest {
 		return ResponseEntity.status(HttpStatus.OK).body(imageService.findByClient(idClient));
 	}
 	
-	@GetMapping(value = { "/view/{id}" })
-	public ResponseEntity<String> view(@PathVariable("id") Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(imageService.view(id));
-	}
-	
 	@GetMapping(value = { "", "/all" })
 	public ResponseEntity<List<Image>> findAll() {
 		return ResponseEntity.status(HttpStatus.OK).body(imageService.findAll());

@@ -34,17 +34,17 @@ public class ImageRestTest {
 	@Autowired
 	ImageRest imageRest = new ImageRest(imageService);
 
-	Image imageMock = new Image(11L, 101L, null);
+	Image imageMock = new Image(11L, 101L, null, null, null);
 	MockMultipartFile multipartFileMock;
 	List<Image> listMock = new ArrayList<>();
 
 	@BeforeEach
 	void setUp() {
-		listMock.add(new Image(1L, 11L, "image01.jpg"));
-		listMock.add(new Image(2L, 21L, "image02.jpg"));
-		listMock.add(new Image(3L, 31L, "image03.jpg"));
-		listMock.add(new Image(4L, 41L, "image04.jpg"));
-		listMock.add(new Image(5L, 51L, "image05.jpg"));
+		listMock.add(new Image(1L, 11L, "image01.jpg", "image01.jpg", "image01.jpg"));
+		listMock.add(new Image(2L, 21L, "image02.jpg", "image02.jpg", "image02.jpg"));
+		listMock.add(new Image(3L, 31L, "image03.jpg", "image03.jpg", "image03.jpg"));
+		listMock.add(new Image(4L, 41L, "image04.jpg", "image04.jpg", "image04.jpg"));
+		listMock.add(new Image(5L, 51L, "image05.jpg", "image05.jpg", "image05.jpg"));
 
 		Optional<Image> optionalMock = Optional.of(listMock.get(0));
 
@@ -77,12 +77,6 @@ public class ImageRestTest {
 	void findByClient() {
 		ResponseEntity<Image> response = imageRest.findByClient(11L);
 		assertEquals(1L, response.getBody().getId());
-	}
-
-	@Test
-	void view() {
-		ResponseEntity<String> response = imageRest.view(1L);
-		assertEquals("images/image01.jpg", response.getBody().toString());
 	}
 
 	@Test

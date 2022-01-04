@@ -1,9 +1,7 @@
 package com.pragma.service.impl;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,12 +65,6 @@ public class ImageServiceImpl implements ImageService{
 			throw new PragmaException("No se ha encontrado niguna imagen al cliente con el id "+idClient+".");
 		return image;
 	}
-	
-	@Override
-	public String view(Long id) {
-		Image image = findById(id);
-		return "images/"+image.getPath();
-	}
 
 	@Override
 	public List<Image> findAll() {
@@ -134,21 +126,14 @@ public class ImageServiceImpl implements ImageService{
 	private Image image(Image image, MultipartFile multipartFile) {
 		if(multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
-		if(!Pragma.isString(pathImage))
-			throw new PragmaException("No se ha recibido la ruta donde se va a guardar la imagen.");
-		Path path = Paths.get(pathImage);
-		String pathAbsolute = path.toFile().getAbsolutePath();
-		image.setPath(null);
 		try {
-			byte [] byteImage = multipartFile.getBytes();
-			Path pathComplete = Paths.get(pathAbsolute+"//"+multipartFile.getOriginalFilename());
-			Files.write(pathComplete, byteImage);
-			image.setPath(multipartFile.getOriginalFilename());
+			byte[] bytes = multipartFile.getBytes();
+			String encoder = Base64.getEncoder().encodeToString(bytes);
+			image.setContentType(multipartFile.getContentType());
+			image.setFilename(multipartFile.getOriginalFilename());
+			image.setPhoto(encoder);
 		} catch (IOException e) {
 			LOGGER.error("image(Image image, MultipartFile multipartFile)", e);
-		}finally {
-			if(!Pragma.isString(image.getPath()))
-				throw new PragmaException("No se ha podido procesar la imagen.");
 		}
 		return image;
 	}
