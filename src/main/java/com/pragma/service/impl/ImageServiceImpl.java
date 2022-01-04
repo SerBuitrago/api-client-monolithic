@@ -41,9 +41,10 @@ public class ImageServiceImpl implements ImageService{
 		this.imageRepository = imageRepository;
 	}
 
-	public ImageServiceImpl(String pathImage, ImageRepository imageRepository) {
+	public ImageServiceImpl(String pathImage, ImageRepository imageRepository, ClientService clientService) {
 		this.pathImage = pathImage;
 		this.imageRepository = imageRepository;
+		this.clientService = clientService;
 	}
 
 	@Override

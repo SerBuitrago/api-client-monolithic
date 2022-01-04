@@ -19,34 +19,45 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 
+import com.pragma.entity.Client;
 import com.pragma.entity.Image;
+import com.pragma.repository.ClientRepository;
 import com.pragma.repository.ImageRepository;
+import com.pragma.service.ClientService;
 import com.pragma.service.ImageService;
+import com.pragma.service.impl.ClientServiceImpl;
 import com.pragma.service.impl.ImageServiceImpl;
 
 public class ImageRestTest {
 
 	ImageRepository imageRepositoryMock = mock(ImageRepository.class);
+	ClientRepository clientRepositoryMock = mock(ClientRepository.class);
+	
 
 	@Autowired
-	ImageService imageService = new ImageServiceImpl("src//main//resources//static//images", imageRepositoryMock);
+	ClientService clientService = new ClientServiceImpl(clientRepositoryMock);
+	@Autowired
+	ImageService imageService = new ImageServiceImpl("src//main//resources//static//images", imageRepositoryMock, clientService);
 
 	@Autowired
 	ImageRest imageRest = new ImageRest(imageService);
 
-	Image imageMock = new Image(11L, 101L, null, null, null);
+	Image imageMock = new Image(11L, 1L, null, null, null);
 	MockMultipartFile multipartFileMock;
 	List<Image> listMock = new ArrayList<>();
 
 	@BeforeEach
 	void setUp() {
-		listMock.add(new Image(1L, 11L, "image01.jpg", "image01.jpg", "image01.jpg"));
+		listMock.add(new Image(1L, 1L, "image01.jpg", "image01.jpg", "image01.jpg"));
 		listMock.add(new Image(2L, 21L, "image02.jpg", "image02.jpg", "image02.jpg"));
 		listMock.add(new Image(3L, 31L, "image03.jpg", "image03.jpg", "image03.jpg"));
 		listMock.add(new Image(4L, 41L, "image04.jpg", "image04.jpg", "image04.jpg"));
 		listMock.add(new Image(5L, 51L, "image05.jpg", "image05.jpg", "image05.jpg"));
 
 		Optional<Image> optionalMock = Optional.of(listMock.get(0));
+		Optional<Client> optionalClientMock = Optional.of(new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga"));
+		
+		when(clientRepositoryMock.findById(1L)).thenReturn(optionalClientMock);
 
 		when(imageRepositoryMock.findById(1L)).thenReturn(optionalMock);
 		when(imageRepositoryMock.findByClient(11L)).thenReturn(listMock.get(0));
