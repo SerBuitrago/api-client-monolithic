@@ -1,5 +1,9 @@
 package com.pragma.controller;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -8,7 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import com.pragma.entity.Client;
 import com.pragma.repository.ClientRepository;
@@ -45,5 +51,58 @@ public class ClientTest {
         when(clientRepositoryMock.findByType("CC")).thenReturn(listMock);
         when(clientRepositoryMock.save(clientMock)).thenReturn(clientMock);
         when(clientRepositoryMock.save(listMock.get(0))).thenReturn(listMock.get(0));
+    }
+    
+    @Test
+	void findById() {
+    	ResponseEntity<Client> response = clientRest.findById(1L);
+    	assertEquals(1L, response.getBody().getId());
+		assertThatNoException();
+    }
+    
+    @Test
+	void findByTypeAndDocument() {
+    	ResponseEntity<Client> response = clientRest.findByTypeAndDocument("CC", 000001L);
+    	assertEquals(1L, response.getBody().getId());
+    	assertThatNoException();
+    }
+    
+    @Test
+	void findByHigherOrEqualsAge() {
+    	ResponseEntity<List<Client>> response = clientRest.findByHigherOrEqualsAge(1);
+    	assertNotEquals(true, response.getBody().isEmpty());
+    	assertThatNoException();
+    }
+    
+    @Test
+	void findAll() {
+    	ResponseEntity<List<Client>> response = clientRest.findAll();
+		assertNotEquals(true, response.getBody().isEmpty());
+    }
+    
+    @Test
+	void findByType() {
+    	ResponseEntity<List<Client>> response = clientRest.findByType("CC");
+		assertNotEquals(true, response.getBody().isEmpty());
+		assertThatNoException();
+    }
+    
+    @Test
+	void save() {
+    	ResponseEntity<Client> response = clientRest.save(clientMock);
+    	assertNotNull(response.getBody());
+		assertThatNoException();
+    }
+    
+    @Test
+	void update() {
+    	ResponseEntity<Client> response = clientRest.update(listMock.get(0));
+    	assertNotNull(response.getBody());
+		assertThatNoException();
+    }
+
+    @Test
+	void delete() {
+    	
     }
 }

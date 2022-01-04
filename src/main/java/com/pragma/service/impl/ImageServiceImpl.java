@@ -31,6 +31,13 @@ public class ImageServiceImpl implements ImageService{
 	
 	@Autowired
 	ImageRepository imageRepository;	
+	
+	public ImageServiceImpl() {
+	}
+
+	public ImageServiceImpl(ImageRepository imageRepository) {
+		this.imageRepository = imageRepository;
+	}
 
 	public ImageServiceImpl(String pathImage, ImageRepository imageRepository) {
 		this.pathImage = pathImage;
