@@ -26,6 +26,10 @@ public class ImageRest {
 	@Autowired
 	ImageService imageService;
 	
+	public ImageRest(ImageService imageService) {
+		this.imageService = imageService;
+	}
+
 	@GetMapping(value = { "/{id}", "/find/id/{id}" })
 	public ResponseEntity<Image> findById(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageService.findById(id));

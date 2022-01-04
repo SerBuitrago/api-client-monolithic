@@ -30,7 +30,12 @@ public class ImageServiceImpl implements ImageService{
 	private String pathImage;
 	
 	@Autowired
-	ImageRepository imageRepository;
+	ImageRepository imageRepository;	
+
+	public ImageServiceImpl(String pathImage, ImageRepository imageRepository) {
+		this.pathImage = pathImage;
+		this.imageRepository = imageRepository;
+	}
 
 	@Override
 	public Image findById(Long id) {
@@ -111,6 +116,8 @@ public class ImageServiceImpl implements ImageService{
 	private Image image(Image image, MultipartFile multipartFile) {
 		if(multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
+		if(!Pragma.isString(pathImage))
+			throw new PragmaException("No se ha recibido la ruta donde se va a guardar la imagen.");
 		Path path = Paths.get(pathImage);
 		String pathAbsolute = path.toFile().getAbsolutePath();
 		image.setPath(null);

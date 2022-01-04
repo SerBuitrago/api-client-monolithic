@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class PragmaClientApiApplicationTests {
 
 	@Test
-	void contextLoads() {
-	}
-
+    void main() {
+        PragmaClientApiApplication.main(new String[] {});
+    }
 }
