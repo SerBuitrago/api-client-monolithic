@@ -18,9 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.pragma.entity.ImageMongoDB;
+import com.pragma.entity.validate.ImageMongoDBValidate;
+import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
 import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
@@ -35,6 +36,9 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Autowired
 	private GridFsOperations operations;
+	
+	@Autowired
+	private ClientService clientService;
 
 	@Override
 	public ImageMongoDB findById(String id) {
@@ -63,32 +67,39 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Override
 	public ImageMongoDB save(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
-		if(multipartFile == null || multipartFile.isEmpty())
+		if (multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
+		ImageMongoDBValidate.message(imageMongoDB);
+		clientService.findById(imageMongoDB.getIdClient());
 		DBObject metadata = new BasicDBObject();
 		metadata.put("fileSize", multipartFile.getSize());
 		metadata.put("idClient", imageMongoDB.getIdClient());
-
 		Object fileID = null;
 		try {
 			fileID = template.store(multipartFile.getInputStream(), multipartFile.getOriginalFilename(),
 					multipartFile.getContentType(), metadata);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("save(ImageMongoDB imageMongoDB, MultipartFile multipartFile)", e);
+		} finally {
+			if (fileID == null)
+				throw new PragmaException(
+						"No se registrado la imagen al cliente con id " + imageMongoDB.getIdClient() + ".");
 		}
-		
+
 		return findById(fileID.toString());
 	}
 
 	@Override
 	public ImageMongoDB update(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
-		// TODO Auto-generated method stub
+		if (multipartFile == null || multipartFile.isEmpty())
+			throw new PragmaException("No se ha recibido la imagen.");
+		ImageMongoDBValidate.message(imageMongoDB);
 		return null;
 	}
 
 	@Override
-	public boolean delete(Long id) {
-		// TODO Auto-generated method stub
+	public boolean delete(String id) {
+		//ImageMongoDB imageMongoDB = findById(id);
 		return false;
 	}
 
@@ -110,7 +121,7 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 			LOGGER.error("findById(String id)", e);
 		} finally {
 			if (isError)
-				throw new PragmaException("Se ha presentado un error.");
+				throw new PragmaException("Se ha presentado un error al procesar la imagen.");
 		}
 		return imageMongoDB;
 	}

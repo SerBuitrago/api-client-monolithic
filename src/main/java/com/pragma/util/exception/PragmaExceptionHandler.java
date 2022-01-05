@@ -29,9 +29,8 @@ public class PragmaExceptionHandler {
 	private Integer getStatus(Exception e) {
 		if (e instanceof PragmaException) {
 			PragmaException ex = (PragmaException) e;
-			if (ex.getHttpStatus() != null) {
+			if (ex.getHttpStatus() != null)
 				return ex.getHttpStatus().value();
-			}
 		}
 		return STATUS.get(e.getClass().getSimpleName());
 	}

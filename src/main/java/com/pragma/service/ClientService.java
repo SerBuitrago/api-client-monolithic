@@ -21,4 +21,6 @@ public interface ClientService {
 	Client update(Client cliente);
 	
 	boolean delete(String type, Long document);
+	
+	boolean delete(Long id);
 }

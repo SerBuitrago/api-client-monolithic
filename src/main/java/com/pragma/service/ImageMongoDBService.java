@@ -18,5 +18,5 @@ public interface ImageMongoDBService {
 	
 	ImageMongoDB update(ImageMongoDB imageMongoDB, MultipartFile multipartFile);
 	
-	boolean delete(Long id);
+	boolean delete(String id);
 }
