@@ -1,7 +1,9 @@
 package com.pragma.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.pragma.entity.ImageMongoDB;
 import com.pragma.service.ImageMongoDBService;
@@ -38,10 +41,60 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 		if (!Pragma.isString(id))
 			throw new PragmaException("No se ha encontrado niguna imagen con el id " + id + ".");
 		GridFSFile gridFSFile = template.findOne(new Query(Criteria.where("_id").is(id)));
-		ImageMongoDB imageMongoDB = new ImageMongoDB();
 		if (gridFSFile == null || gridFSFile.getMetadata() == null)
 			throw new PragmaException("No se ha encontrado niguna imagen con el id " + id + ".");
-		imageMongoDB.set_id(id);
+		return builder(gridFSFile);
+	}
+
+	@Override
+	public List<ImageMongoDB> findByClient(Long idClient) {
+		if (!Pragma.isLong(idClient))
+			throw new PragmaException("El id del cliente no es valido " + idClient + ".");
+		List<ImageMongoDB> list = new ArrayList<>();
+		template.find(new Query(Criteria.where("metadata.idClient").is(idClient)))
+				.forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
+		return list;
+	}
+
+	@Override
+	public List<ImageMongoDB> findAll() {
+		return null;
+	}
+
+	@Override
+	public ImageMongoDB save(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
+		if(multipartFile == null || multipartFile.isEmpty())
+			throw new PragmaException("No se ha recibido la imagen.");
+		DBObject metadata = new BasicDBObject();
+		metadata.put("fileSize", multipartFile.getSize());
+		metadata.put("idClient", imageMongoDB.getIdClient());
+
+		Object fileID = null;
+		try {
+			fileID = template.store(multipartFile.getInputStream(), multipartFile.getOriginalFilename(),
+					multipartFile.getContentType(), metadata);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return findById(fileID.toString());
+	}
+
+	@Override
+	public ImageMongoDB update(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean delete(Long id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private ImageMongoDB builder(GridFSFile gridFSFile) {
+		ImageMongoDB imageMongoDB = new ImageMongoDB();
+		imageMongoDB.set_id(gridFSFile.getObjectId().toString());
 		imageMongoDB.setFilename(gridFSFile.getFilename());
 		imageMongoDB.setIdClient(Long.parseLong(gridFSFile.getMetadata().get("idClient").toString()));
 		imageMongoDB.setFileType(gridFSFile.getMetadata().get("_contentType").toString());
@@ -60,47 +113,6 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 				throw new PragmaException("Se ha presentado un error.");
 		}
 		return imageMongoDB;
-	}
-
-	@Override
-	public ImageMongoDB findByClient(Long idClient) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ImageMongoDB> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ImageMongoDB save(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
-
-		DBObject metadata = new BasicDBObject();
-		metadata.put("fileSize", multipartFile.getSize());
-		metadata.put("idClient", imageMongoDB.getIdClient());
-
-		Object fileID = null;
-		try {
-			fileID = template.store(multipartFile.getInputStream(), multipartFile.getOriginalFilename(),
-					multipartFile.getContentType(), metadata);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public ImageMongoDB update(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean delete(Long id) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

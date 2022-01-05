@@ -1,5 +1,7 @@
 package com.pragma.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,11 @@ public class ImageMongoDBRest {
 	@GetMapping(value = { "/{id}", "/find/id/{id}" })
 	public ResponseEntity<ImageMongoDB> findById(@PathVariable("id") String id) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.findById(id));
+	}
+	
+	@GetMapping(value = { "/all/find/client/{idClient}" })
+	public ResponseEntity<List<ImageMongoDB>> findByClient(@PathVariable("idClient") Long idClient) {
+		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.findByClient(idClient));
 	}
 	
 	@PostMapping
