@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.pragma.mapper.ClientMapper;
 import com.pragma.models.dto.ClientDTO;
 import com.pragma.models.dto.ImageMongoDBDTO;
-import com.pragma.models.entity.validate.ClientValidate;
+import com.pragma.models.dto.validate.ClientDTOValidate;
 import com.pragma.repository.ClientRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
@@ -68,7 +68,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientDTO save(ClientDTO cliente) {
-		ClientValidate.message(clientMapper.toEntity(cliente));
+		ClientDTOValidate.message(cliente);
 		cliente.setId(0L);
 		if (!testTypeDocument(cliente.getType(), cliente.getDocument()))
 			throw new PragmaException("Ya existe un cliente con ese documento y tipo de documento.");
@@ -80,7 +80,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientDTO update(ClientDTO cliente) {
-		ClientValidate.message(clientMapper.toEntity(cliente));
+		ClientDTOValidate.message(cliente);
 		ClientDTO aux = findById(cliente.getId());
 		if (!aux.getType().equalsIgnoreCase(cliente.getType())
 				|| !Objects.equals(aux.getDocument(), cliente.getDocument()))
@@ -100,16 +100,7 @@ public class ClientServiceImpl implements ClientService {
 			throw new PragmaException("No se ha eliminado el cliente con tipo de documento " + type + " y documento "
 					+ document + ", tiene asociado " + list.size() + " fotos.");
 		clientEntityRepository.deleteById(client.getId());
-		try {
-			client = findByTypeAndDocument(type, document);
-		} catch (PragmaException e) {
-			LOGGER.error("delete(String type, Long document)", e);
-			client = null;
-		} finally {
-			if (client == null)
-				return true;
-		}
-		throw new PragmaException("No se ha eliminado el cliente.");
+		return true;
 	}
 
 	@Override
@@ -120,16 +111,7 @@ public class ClientServiceImpl implements ClientService {
 			throw new PragmaException(
 					"No se ha eliminado el cliente con el id " + id + ", tiene asociado " + list.size() + " fotos.");
 		clientEntityRepository.deleteById(client.getId());
-		try {
-			client = findById(id);
-		} catch (PragmaException e) {
-			LOGGER.error("delete(String type, Long document)", e);
-			client = null;
-		} finally {
-			if (client == null)
-				return true;
-		}
-		throw new PragmaException("No se ha eliminado el cliente.");
+		return true;
 	}
 
 	private boolean testTypeDocument(String type, Long document) {

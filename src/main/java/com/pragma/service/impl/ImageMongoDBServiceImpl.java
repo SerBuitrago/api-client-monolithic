@@ -20,7 +20,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.pragma.models.dto.ImageMongoDBDTO;
-import com.pragma.models.entity.validate.ImageMongoDBValidate;
+import com.pragma.models.dto.validate.ImageMongoDBValidate;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
 import com.pragma.util.exception.PragmaException;

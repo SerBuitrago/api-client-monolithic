@@ -1,4 +1,4 @@
-package com.pragma.models.entity.validate;
+package com.pragma.models.dto.validate;
 
 import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.util.Pragma;
