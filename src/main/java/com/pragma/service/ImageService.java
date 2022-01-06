@@ -4,19 +4,19 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pragma.models.dto.ImageDTO;
+import com.pragma.models.entity.Image;
 
 public interface ImageService {
 
-	ImageDTO findById(Long id);
+	Image findById(Long id);
 	
-	ImageDTO findByClient(Long idClient);
+	Image findByClient(Long idClient);
 	
-	List<ImageDTO> findAll();
+	List<Image> findAll();
 	
-	ImageDTO save(ImageDTO image, MultipartFile multipartFile);
+	Image save(Image image, MultipartFile multipartFile);
 	
-	ImageDTO update(ImageDTO image, MultipartFile multipartFile);
+	Image update(Image image, MultipartFile multipartFile);
 	
 	boolean delete(Long id);
 }

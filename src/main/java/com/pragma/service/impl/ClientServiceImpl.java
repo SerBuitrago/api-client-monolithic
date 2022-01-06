@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.pragma.mapper.ClientMapper;
 import com.pragma.models.dto.ClientDTO;
 import com.pragma.models.dto.ImageMongoDBDTO;
-import com.pragma.models.dto.validate.ClientDTOValidate;
+import com.pragma.models.entity.validate.ClientValidate;
 import com.pragma.repository.ClientRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
@@ -32,8 +32,11 @@ public class ClientServiceImpl implements ClientService {
 	@Autowired
 	ImageMongoDBService imageMongoDBService;
 
-	public ClientServiceImpl(ClientRepository clientEntityRepository) {
+	public ClientServiceImpl(ClientRepository clientEntityRepository, ClientMapper clientMapper,
+			ImageMongoDBService imageMongoDBService) {
 		this.clientEntityRepository = clientEntityRepository;
+		this.clientMapper = clientMapper;
+		this.imageMongoDBService = imageMongoDBService;
 	}
 
 	@Override
@@ -68,7 +71,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientDTO save(ClientDTO cliente) {
-		ClientDTOValidate.message(cliente);
+		ClientValidate.message(cliente);
 		cliente.setId(0L);
 		if (!testTypeDocument(cliente.getType(), cliente.getDocument()))
 			throw new PragmaException("Ya existe un cliente con ese documento y tipo de documento.");
@@ -80,7 +83,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientDTO update(ClientDTO cliente) {
-		ClientDTOValidate.message(cliente);
+		ClientValidate.message(cliente);
 		ClientDTO aux = findById(cliente.getId());
 		if (!aux.getType().equalsIgnoreCase(cliente.getType())
 				|| !Objects.equals(aux.getDocument(), cliente.getDocument()))

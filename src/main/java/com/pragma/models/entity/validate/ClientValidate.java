@@ -1,10 +1,10 @@
-package com.pragma.models.dto.validate;
+package com.pragma.models.entity.validate;
 
 import com.pragma.models.dto.ClientDTO;
 import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
 
-public class ClientDTOValidate {
+public class ClientValidate {
 
 	public static void message(ClientDTO client) {
 		if(client == null)

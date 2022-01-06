@@ -1,10 +1,10 @@
-package com.pragma.models.dto.validate;
+package com.pragma.models.entity.validate;
 
 import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
 
-public class ImageMongoDBDTOValidate {
+public class ImageMongoDBValidate {
 	public static void message(ImageMongoDBDTO imageMongoDB) {
 		if(imageMongoDB == null)
 			throw new PragmaException("No se ha validado la imagen.");

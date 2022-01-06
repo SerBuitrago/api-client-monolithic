@@ -38,7 +38,7 @@ public class ImageMongoDBRestTest {
 	ClientRepository clientRepositoryMock = mock(ClientRepository.class);
 
 	@Autowired
-	ClientService clientService = new ClientServiceImpl(clientRepositoryMock);
+	ClientService clientService = new ClientServiceImpl(clientRepositoryMock, null, null);
 	@Autowired
 	ImageMongoDBService imageMongoDBService = new ImageMongoDBServiceImpl(templateMock, operationsMock, clientService);
 	

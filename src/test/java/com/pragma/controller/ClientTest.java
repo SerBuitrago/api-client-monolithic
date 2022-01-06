@@ -26,7 +26,7 @@ public class ClientTest {
 	ClientRepository clientRepositoryMock = mock(ClientRepository.class);
 
 	@Autowired
-	ClientService clientService = new ClientServiceImpl(clientRepositoryMock);
+	ClientService clientService = new ClientServiceImpl(clientRepositoryMock, null, null );
 
 	@Autowired
 	ClientRest clientRest = new ClientRest(clientService);
