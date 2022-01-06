@@ -27,13 +27,11 @@ public class Image {
 	@Column(name = "id_client", nullable = false)
 	private Long idClient;
 	
-	@Column(name = "contentType", nullable = false)
+	@Column(name = "content_type", nullable = false)
 	private String contentType;
 	
-	@Column(name = "filename", nullable = false)
 	private String filename;
 	
 	@Lob
-	@Column(name = "photo", nullable = false)
 	private String photo;
 }
