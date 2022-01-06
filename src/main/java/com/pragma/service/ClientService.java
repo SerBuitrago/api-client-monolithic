@@ -2,23 +2,23 @@ package com.pragma.service;
 
 import java.util.List;
 
-import com.pragma.models.entity.Client;
+import com.pragma.models.dto.ClientDTO;
 
 public interface ClientService {
 	
-	Client findById(Long id);
+	ClientDTO findById(Long id);
 	
-	Client findByTypeAndDocument(String type, Long document);
+	ClientDTO findByTypeAndDocument(String type, Long document);
 	
-	List<Client> findAll();
+	List<ClientDTO> findAll();
 	
-	List<Client> findByHigherOrEqualsAge(int age);
+	List<ClientDTO> findByHigherOrEqualsAge(int age);
 	
-	List<Client> findByType(String type);
+	List<ClientDTO> findByType(String type);
 	
-	Client save(Client cliente);
+	ClientDTO save(ClientDTO cliente);
 	
-	Client update(Client cliente);
+	ClientDTO update(ClientDTO cliente);
 	
 	boolean delete(String type, Long document);
 	

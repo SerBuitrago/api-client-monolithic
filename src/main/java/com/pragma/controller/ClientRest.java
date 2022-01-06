@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pragma.models.entity.Client;
+import com.pragma.models.dto.ClientDTO;
 import com.pragma.service.ClientService;
 
 @RestController
@@ -29,37 +29,37 @@ public class ClientRest {
 	}
 
 	@GetMapping(value = { "/{id}", "/find/id/{id}" })
-	public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
+	public ResponseEntity<ClientDTO> findById(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findById(id));
 	}
 	
 	@GetMapping(value = { "/find/type/{type}/document/{document}" })
-	public ResponseEntity<Client> findByTypeAndDocument(@PathVariable("type") String type, @PathVariable("document") Long document) {
+	public ResponseEntity<ClientDTO> findByTypeAndDocument(@PathVariable("type") String type, @PathVariable("document") Long document) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findByTypeAndDocument(type, document));
 	}
 	
 	@GetMapping(value = { "", "/all" })
-	public ResponseEntity<List<Client>> findAll() {
+	public ResponseEntity<List<ClientDTO>> findAll() {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findAll());
 	}
 	
 	@GetMapping(value = {"/all/find/age/{age}" })
-	public ResponseEntity<List<Client>> findByHigherOrEqualsAge(@PathVariable("age") int age) {
+	public ResponseEntity<List<ClientDTO>> findByHigherOrEqualsAge(@PathVariable("age") int age) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findByHigherOrEqualsAge(age));
 	}
 	
 	@GetMapping(value = {"/all/find/type/{type}" })
-	public ResponseEntity<List<Client>> findByType(@PathVariable("type") String type) {
+	public ResponseEntity<List<ClientDTO>> findByType(@PathVariable("type") String type) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findByType(type));
 	}
 	
 	@PostMapping
-	public ResponseEntity<Client> save(@RequestBody Client client) {
-		return ResponseEntity.status(HttpStatus.OK).body(clientService.save(client));
+	public ResponseEntity<ClientDTO> save(@RequestBody ClientDTO client) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(client));
 	}
 	
 	@PutMapping
-	public ResponseEntity<Client> update(@RequestBody Client client) {
+	public ResponseEntity<ClientDTO> update(@RequestBody ClientDTO client) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.update(client));
 	}
 	

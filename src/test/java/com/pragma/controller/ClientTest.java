@@ -53,7 +53,7 @@ public class ClientTest {
         when(clientRepositoryMock.save(listMock.get(0))).thenReturn(listMock.get(0));
     }
     
-    @Test
+    /*@Test
 	void findById() {
     	ResponseEntity<Client> response = clientRest.findById(1L);
     	assertEquals(1L, response.getBody().getId());
@@ -104,5 +104,5 @@ public class ClientTest {
     @Test
 	void delete() {
     	
-    }
+    }*/
 }

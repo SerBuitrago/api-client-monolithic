@@ -2,15 +2,15 @@ package com.pragma.service.impl;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pragma.mapper.ClientMapper;
+import com.pragma.models.dto.ClientDTO;
 import com.pragma.models.dto.ImageMongoDBDTO;
-import com.pragma.models.entity.Client;
 import com.pragma.models.entity.validate.ClientValidate;
 import com.pragma.repository.ClientRepository;
 import com.pragma.service.ClientService;
@@ -27,6 +27,9 @@ public class ClientServiceImpl implements ClientService {
 	ClientRepository clientEntityRepository;
 
 	@Autowired
+	ClientMapper clientMapper;
+
+	@Autowired
 	ImageMongoDBService imageMongoDBService;
 
 	public ClientServiceImpl(ClientRepository clientEntityRepository) {
@@ -34,15 +37,14 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public Client findById(Long id) {
-		Optional<Client> optional = clientEntityRepository.findById(id);
-		return optional
-				.orElseThrow(() -> new PragmaException("No se ha encontrado ningun cliente con el id " + id + "."));
+	public ClientDTO findById(Long id) {
+		return clientMapper.toDomain(clientEntityRepository.findById(id)
+				.orElseThrow(() -> new PragmaException("No se ha encontrado ningun cliente con el id " + id + ".")));
 	}
 
 	@Override
-	public Client findByTypeAndDocument(String type, Long document) {
-		Client client = clientEntityRepository.findByTypeAndDocument(type, document);
+	public ClientDTO findByTypeAndDocument(String type, Long document) {
+		ClientDTO client = clientMapper.toDomain(clientEntityRepository.findByTypeAndDocument(type, document));
 		if (client == null)
 			throw new PragmaException("No se ha encontrado ningun cliente con el tipo de documento " + type
 					+ " y documento " + document + ".");
@@ -50,41 +52,41 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public List<Client> findByHigherOrEqualsAge(int age) {
-		return clientEntityRepository.findByHigherOrEqualsAge(age);
+	public List<ClientDTO> findByHigherOrEqualsAge(int age) {
+		return clientMapper.toDomainList(clientEntityRepository.findByHigherOrEqualsAge(age));
 	}
 
 	@Override
-	public List<Client> findAll() {
-		return clientEntityRepository.findAll();
+	public List<ClientDTO> findAll() {
+		return clientMapper.toDomainList(clientEntityRepository.findAll());
 	}
 
 	@Override
-	public List<Client> findByType(String type) {
-		return clientEntityRepository.findByType(type);
+	public List<ClientDTO> findByType(String type) {
+		return clientMapper.toDomainList(clientEntityRepository.findByType(type));
 	}
 
 	@Override
-	public Client save(Client cliente) {
-		ClientValidate.message(cliente);
+	public ClientDTO save(ClientDTO cliente) {
+		ClientValidate.message(clientMapper.toEntity(cliente));
 		cliente.setId(0L);
 		if (!testTypeDocument(cliente.getType(), cliente.getDocument()))
 			throw new PragmaException("Ya existe un cliente con ese documento y tipo de documento.");
-		cliente = clientEntityRepository.save(cliente);
+		cliente = clientMapper.toDomain(clientEntityRepository.save(clientMapper.toEntity(cliente)));
 		if (cliente == null)
 			throw new PragmaException("No se ha registrado el cliente.");
 		return cliente;
 	}
 
 	@Override
-	public Client update(Client cliente) {
-		ClientValidate.message(cliente);
-		Client aux = findById(cliente.getId());
+	public ClientDTO update(ClientDTO cliente) {
+		ClientValidate.message(clientMapper.toEntity(cliente));
+		ClientDTO aux = findById(cliente.getId());
 		if (!aux.getType().equalsIgnoreCase(cliente.getType())
 				|| !Objects.equals(aux.getDocument(), cliente.getDocument()))
 			if (!testTypeDocument(cliente.getType(), cliente.getDocument()))
 				throw new PragmaException("Ya existe un cliente con ese documento y tipo de documento.");
-		cliente = clientEntityRepository.save(cliente);
+		cliente = clientMapper.toDomain(clientEntityRepository.save(clientMapper.toEntity(cliente)));
 		if (cliente == null)
 			throw new PragmaException("No se ha actualizado el cliente.");
 		return cliente;
@@ -92,7 +94,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public boolean delete(String type, Long document) {
-		Client client = findByTypeAndDocument(type, document);
+		ClientDTO client = findByTypeAndDocument(type, document);
 		List<ImageMongoDBDTO> list = imageMongoDBService.findByClient(client.getId());
 		if (Pragma.isList(list))
 			throw new PragmaException("No se ha eliminado el cliente con tipo de documento " + type + " y documento "
@@ -112,7 +114,7 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public boolean delete(Long id) {
-		Client client = findById(id);
+		ClientDTO client = findById(id);
 		List<ImageMongoDBDTO> list = imageMongoDBService.findByClient(client.getId());
 		if (Pragma.isList(list))
 			throw new PragmaException(
@@ -131,7 +133,7 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	private boolean testTypeDocument(String type, Long document) {
-		Client client = null;
+		ClientDTO client = null;
 		try {
 			client = findByTypeAndDocument(type, document);
 		} catch (PragmaException e) {
