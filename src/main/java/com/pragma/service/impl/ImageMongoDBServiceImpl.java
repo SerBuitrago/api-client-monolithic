@@ -20,7 +20,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.pragma.models.dto.ImageMongoDBDTO;
-import com.pragma.models.dto.validate.ImageMongoDBValidate;
+import com.pragma.models.dto.validate.ImageMongoDBDTOValidate;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
 import com.pragma.util.exception.PragmaException;
@@ -73,7 +73,7 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 	public ImageMongoDBDTO save(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
 		if (multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
-		ImageMongoDBValidate.message(imageMongoDB);
+		ImageMongoDBDTOValidate.message(imageMongoDB);
 		clientService.findById(imageMongoDB.getIdClient());
 		DBObject metadata = new BasicDBObject();
 		metadata.put("fileSize", multipartFile.getSize());
@@ -97,7 +97,7 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 	public ImageMongoDBDTO update(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
 		if (multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
-		ImageMongoDBValidate.message(imageMongoDB);
+		ImageMongoDBDTOValidate.message(imageMongoDB);
 		return null;
 	}
 
