@@ -23,19 +23,10 @@ public class Client {
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(name = "name", nullable = false, length = 100)
 	private String name;
-	
-	@Column(name = "subname", nullable = true, length = 100)
 	private String subname;
-	
-	@Column(name = "type", nullable = false, length = 100)
 	private String type;
-	
-	@Column(name = "document", nullable = false)
 	private Long document;
-	
-	@Column(name = "age", nullable = false)
 	private int age;
 	
 	@Column(name = "city_birth", nullable = false, length = 100)

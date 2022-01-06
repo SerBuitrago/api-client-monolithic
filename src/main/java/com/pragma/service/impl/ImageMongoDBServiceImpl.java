@@ -23,7 +23,6 @@ import com.pragma.entity.ImageMongoDB;
 import com.pragma.entity.validate.ImageMongoDBValidate;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
-import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
 
 @Service
@@ -36,33 +35,31 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Autowired
 	private GridFsOperations operations;
-	
+
 	@Autowired
 	private ClientService clientService;
 
 	@Override
 	public ImageMongoDB findById(String id) {
-		if (!Pragma.isString(id))
-			throw new PragmaException("No se ha encontrado niguna imagen con el id " + id + ".");
 		GridFSFile gridFSFile = template.findOne(new Query(Criteria.where("_id").is(id)));
 		if (gridFSFile == null || gridFSFile.getMetadata() == null)
 			throw new PragmaException("No se ha encontrado niguna imagen con el id " + id + ".");
 		return builder(gridFSFile);
 	}
-
+	
 	@Override
-	public List<ImageMongoDB> findByClient(Long idClient) {
-		if (!Pragma.isLong(idClient))
-			throw new PragmaException("El id del cliente no es valido " + idClient + ".");
+	public List<ImageMongoDB> findAll() {
 		List<ImageMongoDB> list = new ArrayList<>();
-		template.find(new Query(Criteria.where("metadata.idClient").is(idClient)))
-				.forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
+		template.find(new Query()).forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
 		return list;
 	}
 
 	@Override
-	public List<ImageMongoDB> findAll() {
-		return null;
+	public List<ImageMongoDB> findByClient(Long idClient) {
+		List<ImageMongoDB> list = new ArrayList<>();
+		template.find(new Query(Criteria.where("metadata.idClient").is(idClient)))
+				.forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
+		return list;
 	}
 
 	@Override
@@ -99,8 +96,15 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Override
 	public boolean delete(String id) {
-		//ImageMongoDB imageMongoDB = findById(id);
-		return false;
+		findById(id);
+		template.delete(new Query(Criteria.where("_id").is(id)));
+		try {
+			findById(id);
+		}catch (PragmaException e) {
+			LOGGER.info("delete(String id)", e);
+			return true;
+		}
+		throw new PragmaException("No se ha eliminado la imagen con el id "+id+".");
 	}
 
 	private ImageMongoDB builder(GridFSFile gridFSFile) {
@@ -125,5 +129,4 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 		}
 		return imageMongoDB;
 	}
-
 }

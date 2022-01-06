@@ -35,20 +35,13 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public Client findById(Long id) {
-		if (!Pragma.isLong(id))
-			throw new PragmaException("El id del cliente no es valido.");
 		Optional<Client> optional = clientEntityRepository.findById(id);
-		if (!optional.isPresent())
-			throw new PragmaException("No se ha encontrado ningun cliente con el id " + id + ".");
-		return optional.get();
+		return optional
+				.orElseThrow(() -> new PragmaException("No se ha encontrado ningun cliente con el id " + id + "."));
 	}
 
 	@Override
 	public Client findByTypeAndDocument(String type, Long document) {
-		if (!Pragma.isString(type))
-			throw new PragmaException("El tipo de documento del cliente no es valido.");
-		if (!Pragma.isLong(document))
-			throw new PragmaException("El documento del cliente no es valido.");
 		Client client = clientEntityRepository.findByTypeAndDocument(type, document);
 		if (client == null)
 			throw new PragmaException("No se ha encontrado ningun cliente con el tipo de documento " + type
@@ -58,8 +51,6 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public List<Client> findByHigherOrEqualsAge(int age) {
-		if (!Pragma.isInteger(age))
-			throw new PragmaException("La edad del cliente no es valido.");
 		return clientEntityRepository.findByHigherOrEqualsAge(age);
 	}
 
@@ -70,8 +61,6 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public List<Client> findByType(String type) {
-		if (!Pragma.isString(type))
-			throw new PragmaException("El tipo de documento del cliente no es valido.");
 		return clientEntityRepository.findByType(type);
 	}
 
@@ -91,8 +80,6 @@ public class ClientServiceImpl implements ClientService {
 	public Client update(Client cliente) {
 		ClientValidate.message(cliente);
 		Client aux = findById(cliente.getId());
-		System.out.println(cliente);
-		System.out.println(aux);
 		if (!aux.getType().equalsIgnoreCase(cliente.getType())
 				|| !Objects.equals(aux.getDocument(), cliente.getDocument()))
 			if (!testTypeDocument(cliente.getType(), cliente.getDocument()))
