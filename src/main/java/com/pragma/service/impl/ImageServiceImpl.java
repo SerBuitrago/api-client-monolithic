@@ -39,8 +39,9 @@ public class ImageServiceImpl implements ImageService {
 		this.imageRepository = imageRepository;
 	}
 
-	public ImageServiceImpl(ImageRepository imageRepository, ClientService clientService) {
+	public ImageServiceImpl(ImageRepository imageRepository, ImageMapper imageMapper, ClientService clientService) {
 		this.imageRepository = imageRepository;
+		this.imageMapper = imageMapper;
 		this.clientService = clientService;
 	}
 
