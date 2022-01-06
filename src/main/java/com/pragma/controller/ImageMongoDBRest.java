@@ -42,12 +42,12 @@ public class ImageMongoDBRest {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ImageMongoDB> save(@ModelAttribute ImageMongoDB imageMongoDB, @RequestParam MultipartFile multipartFile) {
+	public ResponseEntity<ImageMongoDB> save(@ModelAttribute ImageMongoDB imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.save(imageMongoDB, multipartFile));
 	}
 	
 	@PutMapping
-	public ResponseEntity<ImageMongoDB> update(@ModelAttribute ImageMongoDB imageMongoDB, @RequestParam MultipartFile multipartFile) {
+	public ResponseEntity<ImageMongoDB> update(@ModelAttribute ImageMongoDB imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.update(imageMongoDB, multipartFile));
 	}
 	

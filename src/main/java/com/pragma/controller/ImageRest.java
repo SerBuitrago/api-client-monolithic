@@ -46,12 +46,12 @@ public class ImageRest {
 	}	
 	
 	@PostMapping
-	public ResponseEntity<Image> save(@ModelAttribute Image image, @RequestParam MultipartFile multipartFile) {
+	public ResponseEntity<Image> save(@ModelAttribute Image image, @RequestParam("file") MultipartFile multipartFile) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageService.save(image, multipartFile));
 	}
 	
 	@PutMapping
-	public ResponseEntity<Image> update(@ModelAttribute Image image, @RequestParam MultipartFile multipartFile) {
+	public ResponseEntity<Image> update(@ModelAttribute Image image, @RequestParam("file") MultipartFile multipartFile) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageService.update(image, multipartFile));
 	}
 	
