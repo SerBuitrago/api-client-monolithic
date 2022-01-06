@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pragma.models.entity.Client;
 import com.pragma.service.ClientService;
-import com.pragma.entity.Client;
 
 @RestController
 @RequestMapping("/api/client")

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import com.pragma.entity.Client;
+import com.pragma.models.entity.Client;
 import com.pragma.repository.ClientRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.impl.ClientServiceImpl;

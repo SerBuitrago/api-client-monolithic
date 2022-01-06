@@ -1,6 +1,6 @@
-package com.pragma.entity.validate;
+package com.pragma.models.entity.validate;
 
-import com.pragma.entity.Image;
+import com.pragma.models.entity.Image;
 import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
 

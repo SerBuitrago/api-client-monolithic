@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pragma.entity.Image;
+import com.pragma.models.entity.Image;
 
 public interface ImageService {
 

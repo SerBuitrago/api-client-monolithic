@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.pragma.entity.Client;
+import com.pragma.models.entity.Client;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {

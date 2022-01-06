@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pragma.entity.Image;
-import com.pragma.entity.validate.ImageValidate;
+import com.pragma.models.entity.Image;
+import com.pragma.models.entity.validate.ImageValidate;
 import com.pragma.repository.ImageRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageService;

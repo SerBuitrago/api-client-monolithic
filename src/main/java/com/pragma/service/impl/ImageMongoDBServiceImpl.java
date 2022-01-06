@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.pragma.entity.ImageMongoDB;
-import com.pragma.entity.validate.ImageMongoDBValidate;
+import com.pragma.models.dto.ImageMongoDBDTO;
+import com.pragma.models.entity.validate.ImageMongoDBValidate;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
 import com.pragma.util.exception.PragmaException;
@@ -38,9 +38,16 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Autowired
 	private ClientService clientService;
+	
+
+	public ImageMongoDBServiceImpl(GridFsTemplate template, GridFsOperations operations, ClientService clientService) {
+		this.template = template;
+		this.operations = operations;
+		this.clientService = clientService;
+	}
 
 	@Override
-	public ImageMongoDB findById(String id) {
+	public ImageMongoDBDTO findById(String id) {
 		GridFSFile gridFSFile = template.findOne(new Query(Criteria.where("_id").is(id)));
 		if (gridFSFile == null || gridFSFile.getMetadata() == null)
 			throw new PragmaException("No se ha encontrado niguna imagen con el id " + id + ".");
@@ -48,22 +55,22 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 	}
 	
 	@Override
-	public List<ImageMongoDB> findAll() {
-		List<ImageMongoDB> list = new ArrayList<>();
+	public List<ImageMongoDBDTO> findAll() {
+		List<ImageMongoDBDTO> list = new ArrayList<>();
 		template.find(new Query()).forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
 		return list;
 	}
 
 	@Override
-	public List<ImageMongoDB> findByClient(Long idClient) {
-		List<ImageMongoDB> list = new ArrayList<>();
+	public List<ImageMongoDBDTO> findByClient(Long idClient) {
+		List<ImageMongoDBDTO> list = new ArrayList<>();
 		template.find(new Query(Criteria.where("metadata.idClient").is(idClient)))
 				.forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
 		return list;
 	}
 
 	@Override
-	public ImageMongoDB save(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
+	public ImageMongoDBDTO save(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
 		if (multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
 		ImageMongoDBValidate.message(imageMongoDB);
@@ -87,7 +94,7 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 	}
 
 	@Override
-	public ImageMongoDB update(ImageMongoDB imageMongoDB, MultipartFile multipartFile) {
+	public ImageMongoDBDTO update(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
 		if (multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
 		ImageMongoDBValidate.message(imageMongoDB);
@@ -107,8 +114,8 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 		throw new PragmaException("No se ha eliminado la imagen con el id "+id+".");
 	}
 
-	private ImageMongoDB builder(GridFSFile gridFSFile) {
-		ImageMongoDB imageMongoDB = new ImageMongoDB();
+	private ImageMongoDBDTO builder(GridFSFile gridFSFile) {
+		ImageMongoDBDTO imageMongoDB = new ImageMongoDBDTO();
 		imageMongoDB.set_id(gridFSFile.getObjectId().toString());
 		imageMongoDB.setFilename(gridFSFile.getFilename());
 		imageMongoDB.setIdClient(Long.parseLong(gridFSFile.getMetadata().get("idClient").toString()));

@@ -19,8 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.pragma.entity.Client;
-import com.pragma.entity.Image;
+import com.pragma.models.entity.Client;
+import com.pragma.models.entity.Image;
 import com.pragma.repository.ClientRepository;
 import com.pragma.repository.ImageRepository;
 import com.pragma.service.ClientService;

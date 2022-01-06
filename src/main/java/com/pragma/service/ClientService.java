@@ -2,7 +2,7 @@ package com.pragma.service;
 
 import java.util.List;
 
-import com.pragma.entity.Client;
+import com.pragma.models.entity.Client;
 
 public interface ClientService {
 	

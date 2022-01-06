@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pragma.entity.Client;
-import com.pragma.entity.ImageMongoDB;
-import com.pragma.entity.validate.ClientValidate;
+import com.pragma.models.dto.ImageMongoDBDTO;
+import com.pragma.models.entity.Client;
+import com.pragma.models.entity.validate.ClientValidate;
 import com.pragma.repository.ClientRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
@@ -93,7 +93,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public boolean delete(String type, Long document) {
 		Client client = findByTypeAndDocument(type, document);
-		List<ImageMongoDB> list = imageMongoDBService.findByClient(client.getId());
+		List<ImageMongoDBDTO> list = imageMongoDBService.findByClient(client.getId());
 		if (Pragma.isList(list))
 			throw new PragmaException("No se ha eliminado el cliente con tipo de documento " + type + " y documento "
 					+ document + ", tiene asociado " + list.size() + " fotos.");
@@ -113,7 +113,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public boolean delete(Long id) {
 		Client client = findById(id);
-		List<ImageMongoDB> list = imageMongoDBService.findByClient(client.getId());
+		List<ImageMongoDBDTO> list = imageMongoDBService.findByClient(client.getId());
 		if (Pragma.isList(list))
 			throw new PragmaException(
 					"No se ha eliminado el cliente con el id " + id + ", tiene asociado " + list.size() + " fotos.");

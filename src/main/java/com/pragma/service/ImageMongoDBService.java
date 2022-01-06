@@ -4,19 +4,19 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pragma.entity.ImageMongoDB;
+import com.pragma.models.dto.ImageMongoDBDTO;
 
 public interface ImageMongoDBService {
 
-	ImageMongoDB findById(String id);
+	ImageMongoDBDTO findById(String id);
 	
-	List<ImageMongoDB> findByClient(Long idClient);
+	List<ImageMongoDBDTO> findByClient(Long idClient);
 	
-	List<ImageMongoDB> findAll();
+	List<ImageMongoDBDTO> findAll();
 	
-	ImageMongoDB save(ImageMongoDB imageMongoDB, MultipartFile multipartFile);
+	ImageMongoDBDTO save(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile);
 	
-	ImageMongoDB update(ImageMongoDB imageMongoDB, MultipartFile multipartFile);
+	ImageMongoDBDTO update(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile);
 	
 	boolean delete(String id);
 }

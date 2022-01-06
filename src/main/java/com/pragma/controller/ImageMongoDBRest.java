@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pragma.entity.ImageMongoDB;
+import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.service.ImageMongoDBService;
 
 @RestController
@@ -26,28 +26,32 @@ public class ImageMongoDBRest {
 	@Autowired
 	ImageMongoDBService imageMongoDBService;
 	
+	public ImageMongoDBRest(ImageMongoDBService imageMongoDBService) {
+		this.imageMongoDBService = imageMongoDBService;
+	}
+
 	@GetMapping(value = { "/{id}", "/find/id/{id}" })
-	public ResponseEntity<ImageMongoDB> findById(@PathVariable("id") String id) {
+	public ResponseEntity<ImageMongoDBDTO> findById(@PathVariable("id") String id) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.findById(id));
 	}
 	
 	@GetMapping(value = { "", "/all" })
-	public ResponseEntity<List<ImageMongoDB>> findAll() {
+	public ResponseEntity<List<ImageMongoDBDTO>> findAll() {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.findAll());
 	}
 	
 	@GetMapping(value = { "/all/find/client/{idClient}" })
-	public ResponseEntity<List<ImageMongoDB>> findByClient(@PathVariable("idClient") Long idClient) {
+	public ResponseEntity<List<ImageMongoDBDTO>> findByClient(@PathVariable("idClient") Long idClient) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.findByClient(idClient));
 	}
 	
 	@PostMapping
-	public ResponseEntity<ImageMongoDB> save(@ModelAttribute ImageMongoDB imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
+	public ResponseEntity<ImageMongoDBDTO> save(@ModelAttribute ImageMongoDBDTO imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.save(imageMongoDB, multipartFile));
 	}
 	
 	@PutMapping
-	public ResponseEntity<ImageMongoDB> update(@ModelAttribute ImageMongoDB imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
+	public ResponseEntity<ImageMongoDBDTO> update(@ModelAttribute ImageMongoDBDTO imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.update(imageMongoDB, multipartFile));
 	}
 	

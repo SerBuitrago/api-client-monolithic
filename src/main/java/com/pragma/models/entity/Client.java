@@ -1,4 +1,4 @@
-package com.pragma.entity;
+package com.pragma.models.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
