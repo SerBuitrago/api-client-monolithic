@@ -10,7 +10,7 @@ public interface ImageMongoDBService {
 
 	ImageMongoDBDTO findById(String id);
 	
-	List<ImageMongoDBDTO> findByClient(Long idClient);
+	ImageMongoDBDTO findByClient(Long idClient);
 	
 	List<ImageMongoDBDTO> findAll();
 	

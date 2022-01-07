@@ -19,8 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.pragma.mapper.ImageMongoDBMapper;
 import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.models.entity.validate.ImageMongoDBValidate;
+import com.pragma.repository.ImageMongoDBRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
 import com.pragma.util.exception.PragmaException;
@@ -31,18 +33,17 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageMongoDBServiceImpl.class);
 
 	@Autowired
-	private GridFsTemplate template;
-
-	@Autowired
-	private GridFsOperations operations;
+	ImageMongoDBRepository imageMongoDBRepository;
+	@Autowired 
+	ImageMongoDBMapper imageMongoDBMapper;
 
 	@Autowired
 	private ClientService clientService;
-	
 
-	public ImageMongoDBServiceImpl(GridFsTemplate template, GridFsOperations operations, ClientService clientService) {
-		this.template = template;
-		this.operations = operations;
+	public ImageMongoDBServiceImpl(ImageMongoDBRepository imageMongoDBRepository, ImageMongoDBMapper imageMongoDBMapper,
+			ClientService clientService) {
+		this.imageMongoDBRepository = imageMongoDBRepository;
+		this.imageMongoDBMapper = imageMongoDBMapper;
 		this.clientService = clientService;
 	}
 
@@ -62,7 +63,7 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 	}
 
 	@Override
-	public List<ImageMongoDBDTO> findByClient(Long idClient) {
+	public ImageMongoDBDTO findByClient(Long idClient) {
 		List<ImageMongoDBDTO> list = new ArrayList<>();
 		template.find(new Query(Criteria.where("metadata.idClient").is(idClient)))
 				.forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));

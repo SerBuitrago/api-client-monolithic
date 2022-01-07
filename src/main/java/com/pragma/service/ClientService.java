@@ -20,7 +20,5 @@ public interface ClientService {
 	
 	ClientDTO update(ClientDTO cliente);
 	
-	boolean delete(String type, Long document);
-	
 	boolean delete(Long id);
 }

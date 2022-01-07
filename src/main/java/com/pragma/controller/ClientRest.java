@@ -69,9 +69,4 @@ public class ClientRest {
 	public ResponseEntity<Boolean> delete(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.delete(id));
 	}
-	
-	@DeleteMapping(value = { "/delete/type/{type}/document/{document}" })
-	public ResponseEntity<Boolean> delete(@PathVariable("type") String type, @PathVariable("document") Long document) {
-		return ResponseEntity.status(HttpStatus.OK).body(clientService.delete(type, document));
-	}
 }
