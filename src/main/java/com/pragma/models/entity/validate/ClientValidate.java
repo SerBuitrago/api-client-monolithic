@@ -1,12 +1,12 @@
 package com.pragma.models.entity.validate;
 
-import com.pragma.models.dto.ClientDTO;
+import com.pragma.models.entity.Client;
 import com.pragma.util.Pragma;
 import com.pragma.util.exception.PragmaException;
 
 public class ClientValidate {
 
-	public static void message(ClientDTO client) {
+	public static void message(Client client) {
 		if(client == null)
 			throw new PragmaException("No se ha podido validar el cliente.");
 		if(!Pragma.isString(client.getName()))

@@ -11,9 +11,9 @@ import com.pragma.models.entity.Client;
 @Mapper(componentModel = "spring")
 public interface ClientMapper {
 	
-	ClientDTO toDomain(Client client);
+	ClientDTO toDTO(Client client);
 	
-	List<ClientDTO> toDomainList(List<Client> clients);
+	List<ClientDTO> toDTOList(List<Client> clients);
 
 	Client toEntity(ClientDTO clientDTO);
 	

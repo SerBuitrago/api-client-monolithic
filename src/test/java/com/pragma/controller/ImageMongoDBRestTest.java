@@ -30,7 +30,7 @@ import com.pragma.service.impl.ImageMongoDBServiceImpl;
 
 public class ImageMongoDBRestTest {
 	
-	@Autowired
+	/*@Autowired
     GridFsTemplate templateMock= mock(GridFsTemplate.class);
 	@Autowired
 	GridFsOperations operationsMock = mock(GridFsOperations.class);
@@ -95,6 +95,6 @@ public class ImageMongoDBRestTest {
 	
 	@Test
 	void delete() {
-	}
+	}*/
 
 }

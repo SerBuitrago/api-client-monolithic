@@ -12,5 +12,5 @@ public class ImageDTO {
 	private Long idClient;
 	private String contentType;
 	private String filename;
-	private String photo;
+	private String image;
 }

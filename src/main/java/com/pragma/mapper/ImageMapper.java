@@ -10,9 +10,9 @@ import com.pragma.models.entity.Image;
 @Mapper(componentModel = "spring")
 public interface ImageMapper {
 
-	ImageDTO toDomain(Image image);
+	ImageDTO toDTO(Image image);
 	
-	List<ImageDTO> toDomainList(List<Image> images);
+	List<ImageDTO> toDTOList(List<Image> images);
 
 	Image toEntity(ImageDTO imageDTO);
 	

@@ -33,7 +33,7 @@ import com.pragma.service.impl.ImageServiceImpl;
 
 public class ImageRestTest {
 
-	ImageRepository imageRepositoryMock = mock(ImageRepository.class);
+	/*ImageRepository imageRepositoryMock = mock(ImageRepository.class);
 	ClientRepository clientRepositoryMock = mock(ClientRepository.class);
 
 	ImageMapper imageMapperMock = mock(ImageMapper.class);
@@ -133,5 +133,5 @@ public class ImageRestTest {
 
 	@Test
 	void delete() {
-	}
+	}*/
 }

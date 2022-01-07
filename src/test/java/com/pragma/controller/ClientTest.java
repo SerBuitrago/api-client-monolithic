@@ -23,7 +23,7 @@ import com.pragma.service.impl.ClientServiceImpl;
 
 public class ClientTest {
 
-	ClientRepository clientRepositoryMock = mock(ClientRepository.class);
+	/*ClientRepository clientRepositoryMock = mock(ClientRepository.class);
 
 	@Autowired
 	ClientService clientService = new ClientServiceImpl(clientRepositoryMock, null, null );

@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pragma.models.entity.Image;
+import com.pragma.mapper.ImageMapper;
+import com.pragma.models.dto.ImageDTO;
 import com.pragma.models.entity.validate.ImageValidate;
 import com.pragma.repository.ImageRepository;
 import com.pragma.service.ClientService;
@@ -24,58 +25,50 @@ public class ImageServiceImpl implements ImageService {
 
 	@Autowired
 	ImageRepository imageRepository;
+	@Autowired
+	ImageMapper imageMapper;
 
 	@Autowired
 	ClientService clientService;
 
-	public ImageServiceImpl() {
-	}
-
-	public ImageServiceImpl(ImageRepository imageRepository) {
+	public ImageServiceImpl(ImageRepository imageRepository, ImageMapper imageMapper, ClientService clientService) {
 		this.imageRepository = imageRepository;
-	}
-
-	public ImageServiceImpl(ImageRepository imageRepository, ClientService clientService) {
-		this.imageRepository = imageRepository;
+		this.imageMapper = imageMapper;
 		this.clientService = clientService;
 	}
 
 	@Override
-	public Image findById(Long id) {
-		return imageRepository.findById(id)
-				.orElseThrow(() -> new PragmaException("No se ha encontrado ninguna imagen con el id " + id + "."));
+	public ImageDTO findById(Long id) {
+		return imageMapper.toDTO(imageRepository.findById(id)
+				.orElseThrow(() -> new PragmaException("No se ha encontrado ninguna imagen con el id " + id + ".")));
 	}
 
 	@Override
-	public Image findByClient(Long idClient) {
-		Image image = imageRepository.findByClient(idClient);
+	public ImageDTO findByClient(Long idClient) {
+		ImageDTO image = imageMapper.toDTO(imageRepository.findByClient(idClient));
 		if (image == null)
 			throw new PragmaException("No se ha encontrado niguna imagen al cliente con el id " + idClient + ".");
 		return image;
 	}
 
 	@Override
-	public List<Image> findAll() {
-		return imageRepository.findAll();
+	public List<ImageDTO> findAll() {
+		return imageMapper.toDTOList(imageRepository.findAll());
 	}
 
 	@Override
-	public Image save(Image image, MultipartFile multipartFile) {
-		System.out.println(image);
+	public ImageDTO save(ImageDTO image, MultipartFile multipartFile) {
 		ImageValidate.message(image);
 		if (!testClient(image.getIdClient()))
 			throw new PragmaException("El cliente con el id " + image.getIdClient() + " ya tiene una imagen asignada.");
-		System.out.println("Pasop");
-		System.out.println(image.getIdClient());
 		clientService.findById(image.getIdClient());
-		System.out.println("Paso cliente");
 		return saveToUpdate(image, multipartFile, true);
 	}
 
 	@Override
-	public Image update(Image image, MultipartFile multipartFile) {
+	public ImageDTO update(ImageDTO image, MultipartFile multipartFile) {
 		ImageValidate.message(image);
-		Image aux = findById(image.getId());
+		ImageDTO aux = findById(image.getId());
 		if (aux.getIdClient() != image.getIdClient()) {
 			clientService.findById(image.getIdClient());
 			if (!testClient(image.getIdClient()))
@@ -93,7 +86,7 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	private boolean testClient(Long idClient) {
-		Image image = null;
+		ImageDTO image = null;
 		try {
 			image = findByClient(idClient);
 		} catch (PragmaException e) {
@@ -102,27 +95,26 @@ public class ImageServiceImpl implements ImageService {
 		return image == null;
 	}
 
-	private Image image(Image image, MultipartFile multipartFile) {
+	private ImageDTO image(ImageDTO image, MultipartFile multipartFile) {
 		if (multipartFile == null || multipartFile.isEmpty())
 			throw new PragmaException("No se ha recibido la imagen.");
 		try {
 			byte[] bytes = multipartFile.getBytes();
-			String encoder = Base64.getEncoder().encodeToString(bytes);
 			image.setContentType(multipartFile.getContentType());
 			image.setFilename(multipartFile.getOriginalFilename());
-			image.setImage(encoder);
+			image.setImage(Base64.getEncoder().encodeToString(bytes));
 		} catch (IOException e) {
 			LOGGER.error("image(Image image, MultipartFile multipartFile)", e);
 		}
 		return image;
 	}
-	
-	private Image saveToUpdate(Image image, MultipartFile multipartFile, boolean isRegister) {
+
+	private ImageDTO saveToUpdate(ImageDTO image, MultipartFile multipartFile, boolean isRegister) {
 		image = image(image, multipartFile);
-		image = imageRepository.save(image);
+		image = imageMapper.toDTO(imageRepository.save(imageMapper.toEntity(image)));
 		if (image == null)
-			throw new PragmaException(isRegister ? "No se ha registrado la imagen.": "No se ha actualizado la imagen.");
-		System.out.println("Return: "+image);
+			throw new PragmaException(
+					isRegister ? "No se ha registrado la imagen." : "No se ha actualizado la imagen.");
 		return image;
 	}
 }
