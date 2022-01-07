@@ -1,24 +1,15 @@
 package com.pragma.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-import java.util.function.Consumer;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsOperations;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.client.gridfs.model.GridFSFile;
 import com.pragma.mapper.ImageMongoDBMapper;
 import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.models.entity.validate.ImageMongoDBValidate;
@@ -34,7 +25,7 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Autowired
 	ImageMongoDBRepository imageMongoDBRepository;
-	@Autowired 
+	@Autowired
 	ImageMongoDBMapper imageMongoDBMapper;
 
 	@Autowired
@@ -49,92 +40,83 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Override
 	public ImageMongoDBDTO findById(String id) {
-		GridFSFile gridFSFile = template.findOne(new Query(Criteria.where("_id").is(id)));
-		if (gridFSFile == null || gridFSFile.getMetadata() == null)
-			throw new PragmaException("No se ha encontrado niguna imagen con el id " + id + ".");
-		return builder(gridFSFile);
-	}
-	
-	@Override
-	public List<ImageMongoDBDTO> findAll() {
-		List<ImageMongoDBDTO> list = new ArrayList<>();
-		template.find(new Query()).forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
-		return list;
+		return imageMongoDBMapper.toDTO(imageMongoDBRepository.findById(id)
+				.orElseThrow(() -> new PragmaException("No se ha encontrado ninguna imagen con el id " + id + ".")));
 	}
 
 	@Override
 	public ImageMongoDBDTO findByClient(Long idClient) {
-		List<ImageMongoDBDTO> list = new ArrayList<>();
-		template.find(new Query(Criteria.where("metadata.idClient").is(idClient)))
-				.forEach((Consumer<GridFSFile>) g -> list.add(builder(g)));
-		return list;
+		ImageMongoDBDTO image = imageMongoDBMapper.toDTO(imageMongoDBRepository.findByClient(idClient));
+		if (image == null)
+			throw new PragmaException("No se ha encontrado niguna imagen al cliente con el id " + idClient + ".");
+		return image;
+	}
+
+	@Override
+	public List<ImageMongoDBDTO> findAll() {
+		return imageMongoDBMapper.toDTOList(imageMongoDBRepository.findAll());
 	}
 
 	@Override
 	public ImageMongoDBDTO save(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
-		if (multipartFile == null || multipartFile.isEmpty())
-			throw new PragmaException("No se ha recibido la imagen.");
 		ImageMongoDBValidate.message(imageMongoDB);
+		if (!testClient(imageMongoDB.getIdClient()))
+			throw new PragmaException(
+					"El cliente con el id " + imageMongoDB.getIdClient() + " ya tiene una imagen asignada.");
 		clientService.findById(imageMongoDB.getIdClient());
-		DBObject metadata = new BasicDBObject();
-		metadata.put("fileSize", multipartFile.getSize());
-		metadata.put("idClient", imageMongoDB.getIdClient());
-		Object fileID = null;
-		try {
-			fileID = template.store(multipartFile.getInputStream(), multipartFile.getOriginalFilename(),
-					multipartFile.getContentType(), metadata);
-		} catch (IOException e) {
-			LOGGER.error("save(ImageMongoDB imageMongoDB, MultipartFile multipartFile)", e);
-		} finally {
-			if (fileID == null)
-				throw new PragmaException(
-						"No se registrado la imagen al cliente con id " + imageMongoDB.getIdClient() + ".");
-		}
-
-		return findById(fileID.toString());
+		return saveToUpdate(imageMongoDB, multipartFile, true);
 	}
 
 	@Override
 	public ImageMongoDBDTO update(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
-		if (multipartFile == null || multipartFile.isEmpty())
-			throw new PragmaException("No se ha recibido la imagen.");
 		ImageMongoDBValidate.message(imageMongoDB);
-		return null;
+		ImageMongoDBDTO aux = findById(imageMongoDB.get_id());
+		if (aux.getIdClient() != imageMongoDB.getIdClient()) {
+			clientService.findById(imageMongoDB.getIdClient());
+			if (!testClient(imageMongoDB.getIdClient()))
+				throw new PragmaException(
+						"El cliente con el id " + imageMongoDB.getIdClient() + " ya tiene una imagen asignada.");
+		}
+		return saveToUpdate(imageMongoDB, multipartFile, true);
 	}
 
 	@Override
 	public boolean delete(String id) {
 		findById(id);
-		template.delete(new Query(Criteria.where("_id").is(id)));
-		try {
-			findById(id);
-		}catch (PragmaException e) {
-			LOGGER.info("delete(String id)", e);
-			return true;
-		}
-		throw new PragmaException("No se ha eliminado la imagen con el id "+id+".");
+		imageMongoDBRepository.deleteById(id);
+		return true;
 	}
 
-	private ImageMongoDBDTO builder(GridFSFile gridFSFile) {
-		ImageMongoDBDTO imageMongoDB = new ImageMongoDBDTO();
-		imageMongoDB.set_id(gridFSFile.getObjectId().toString());
-		imageMongoDB.setFilename(gridFSFile.getFilename());
-		imageMongoDB.setIdClient(Long.parseLong(gridFSFile.getMetadata().get("idClient").toString()));
-		imageMongoDB.setFileType(gridFSFile.getMetadata().get("_contentType").toString());
-		imageMongoDB.setFileSize(gridFSFile.getMetadata().get("fileSize").toString());
-		boolean isError = false;
+	private boolean testClient(Long idClient) {
+		ImageMongoDBDTO image = null;
 		try {
-			imageMongoDB.setFile(IOUtils.toByteArray(operations.getResource(gridFSFile).getInputStream()));
-		} catch (IllegalStateException e) {
-			isError = true;
-			LOGGER.error("findById(String id)", e);
-		} catch (IOException e) {
-			isError = true;
-			LOGGER.error("findById(String id)", e);
-		} finally {
-			if (isError)
-				throw new PragmaException("Se ha presentado un error al procesar la imagen.");
+			image = findByClient(idClient);
+		} catch (PragmaException e) {
+			LOGGER.info("testClient(Long idClient)", e);
 		}
-		return imageMongoDB;
+		return image == null;
+	}
+
+	private ImageMongoDBDTO image(ImageMongoDBDTO image, MultipartFile multipartFile) {
+		if (multipartFile == null || multipartFile.isEmpty())
+			throw new PragmaException("No se ha recibido la imagen.");
+		try {
+			byte[] bytes = multipartFile.getBytes();
+			image.setContentType(multipartFile.getContentType());
+			image.setFilename(multipartFile.getOriginalFilename());
+			image.setImage(Base64.getEncoder().encodeToString(bytes));
+		} catch (IOException e) {
+			LOGGER.error("image(Image image, MultipartFile multipartFile)", e);
+		}
+		return image;
+	}
+
+	private ImageMongoDBDTO saveToUpdate(ImageMongoDBDTO image, MultipartFile multipartFile, boolean isRegister) {
+		image = image(image, multipartFile);
+		image = imageMongoDBMapper.toDTO(imageMongoDBRepository.save(imageMongoDBMapper.toEntity(image)));
+		if (image == null)
+			throw new PragmaException(
+					isRegister ? "No se ha registrado la imagen." : "No se ha actualizado la imagen.");
+		return image;
 	}
 }

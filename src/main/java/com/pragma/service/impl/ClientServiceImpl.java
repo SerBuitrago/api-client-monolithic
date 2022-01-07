@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.pragma.mapper.ClientMapper;
 import com.pragma.models.dto.ClientDTO;
-import com.pragma.models.dto.ImageDTO;
 import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.models.entity.validate.ClientValidate;
 import com.pragma.repository.ClientRepository;

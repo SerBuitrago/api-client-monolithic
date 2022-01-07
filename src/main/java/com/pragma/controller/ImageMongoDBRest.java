@@ -41,7 +41,7 @@ public class ImageMongoDBRest {
 	}
 	
 	@GetMapping(value = { "/all/find/client/{idClient}" })
-	public ResponseEntity<List<ImageMongoDBDTO>> findByClient(@PathVariable("idClient") Long idClient) {
+	public ResponseEntity<ImageMongoDBDTO> findByClient(@PathVariable("idClient") Long idClient) {
 		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.findByClient(idClient));
 	}
 	
