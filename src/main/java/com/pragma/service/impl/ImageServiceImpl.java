@@ -110,7 +110,7 @@ public class ImageServiceImpl implements ImageService {
 			String encoder = Base64.getEncoder().encodeToString(bytes);
 			image.setContentType(multipartFile.getContentType());
 			image.setFilename(multipartFile.getOriginalFilename());
-			image.setPhoto(encoder);
+			image.setImage(encoder);
 		} catch (IOException e) {
 			LOGGER.error("image(Image image, MultipartFile multipartFile)", e);
 		}

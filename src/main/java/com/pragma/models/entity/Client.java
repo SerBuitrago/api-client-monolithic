@@ -29,6 +29,9 @@ public class Client {
 	private Long document;
 	private int age;
 	
+	@Column(name = "image", nullable = true)
+	private String image;
+	
 	@Column(name = "city_birth", nullable = false, length = 100)
 	private String cityBirth;
 }

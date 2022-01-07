@@ -11,8 +11,7 @@ public class ImageMongoDBDTO {
 	
 	private String _id;
 	private Long idClient;
+	private String contentType;
 	private String filename;
-	private String fileType;
-	private String fileSize;
-	private byte[] file;
+	private String photo;
 }
