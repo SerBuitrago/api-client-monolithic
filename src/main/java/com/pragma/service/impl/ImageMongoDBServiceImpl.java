@@ -30,6 +30,13 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Autowired
 	private ClientService clientService;
+	
+	public ImageMongoDBServiceImpl() {
+	}
+
+	public ImageMongoDBServiceImpl(ImageMongoDBRepository imageMongoDBRepository) {
+		this.imageMongoDBRepository = imageMongoDBRepository;
+	}
 
 	public ImageMongoDBServiceImpl(ImageMongoDBRepository imageMongoDBRepository, ImageMongoDBMapper imageMongoDBMapper,
 			ClientService clientService) {

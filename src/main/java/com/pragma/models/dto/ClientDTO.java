@@ -16,7 +16,4 @@ public class ClientDTO {
 	private Long document;
 	private int age;
 	private String cityBirth;
-	
-	private ImageDTO imageDTO;
-	private ImageMongoDBDTO imageMongoDBDTO;
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pragma.mapper.ClientMapper;
 import com.pragma.models.dto.ClientDTO;
+import com.pragma.models.dto.ImageDTO;
 import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.models.entity.validate.ClientValidate;
 import com.pragma.repository.ClientRepository;
@@ -33,9 +34,21 @@ public class ClientServiceImpl implements ClientService {
 	ImageMongoDBService imageMongoDBService;
 	@Autowired
 	ImageService imageService;
+	
+	public ClientServiceImpl() {
+	}
+
+	public ClientServiceImpl(ClientRepository clientEntityRepository) {
+		this.clientEntityRepository = clientEntityRepository;
+	}
+	
+	public ClientServiceImpl(ClientRepository clientEntityRepository, ClientMapper clientMapper) {
+		this.clientEntityRepository = clientEntityRepository;
+		this.clientMapper = clientMapper;
+	}
 
 	public ClientServiceImpl(ClientRepository clientEntityRepository, ClientMapper clientMapper,
-			ImageMongoDBService imageMongoDBService, ImageServiceImpl imageService) {
+			ImageMongoDBService imageMongoDBService, ImageService imageService) {
 		this.clientEntityRepository = clientEntityRepository;
 		this.clientMapper = clientMapper;
 		this.imageMongoDBService = imageMongoDBService;
@@ -44,9 +57,8 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public ClientDTO findById(Long id) {
-		ClientDTO clientDTO = clientMapper.toDTO(clientEntityRepository.findById(id)
+		return clientMapper.toDTO(clientEntityRepository.findById(id)
 				.orElseThrow(() -> new PragmaException("No se ha encontrado ningun cliente con el id " + id + ".")));
-		return image(clientDTO);
 	}
 
 	@Override
@@ -103,9 +115,10 @@ public class ClientServiceImpl implements ClientService {
 	public boolean delete(Long id) {
 		ClientDTO client = findById(id);
 		ImageMongoDBDTO imageMongoDBDTO = imageMongoDBService.findByClient(client.getId());
-		if (imageMongoDBDTO == null)
+		ImageDTO imageDTO = imageService.findByClient(client.getId());
+		if (imageMongoDBDTO == null || imageDTO == null)
 			throw new PragmaException(
-					"No se ha eliminado el cliente con el id " + id + ", tiene asociado una imagen en mongodb.");
+					"No se ha eliminado el cliente con el id " + id + ", tiene asociado una imagen.");
 		clientEntityRepository.deleteById(client.getId());
 		return true;
 	}
@@ -118,11 +131,5 @@ public class ClientServiceImpl implements ClientService {
 			LOGGER.error("testTypeDocument(String type, Long document)", e);
 		}
 		return client == null;
-	}
-
-	private ClientDTO image(ClientDTO clientDTO) {
-		clientDTO.setImageDTO(imageService.findByClient(clientDTO.getId()));
-		clientDTO.setImageMongoDBDTO(imageMongoDBService.findByClient(clientDTO.getId()));
-		return clientDTO;
 	}
 }

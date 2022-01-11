@@ -30,6 +30,13 @@ public class ImageServiceImpl implements ImageService {
 
 	@Autowired
 	ClientService clientService;
+	
+	public ImageServiceImpl() {
+	}
+	
+	public ImageServiceImpl(ImageRepository imageRepository) {
+		this.imageRepository = imageRepository;
+	}
 
 	public ImageServiceImpl(ImageRepository imageRepository, ImageMapper imageMapper, ClientService clientService) {
 		this.imageRepository = imageRepository;

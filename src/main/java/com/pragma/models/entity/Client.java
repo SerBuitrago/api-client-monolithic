@@ -5,10 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,11 +31,4 @@ public class Client {
 	
 	@Column(name = "city_birth", nullable = false, length = 100)
 	private String cityBirth;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_image", nullable = true)
-	private Image image;
-	
-	@Transient
-	private ImageMongoDB imageMongoDB;
 }

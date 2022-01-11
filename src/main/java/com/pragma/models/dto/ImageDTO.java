@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageDTO {
+	
 	private Long id;
 	private Long idClient;
 	private String contentType;

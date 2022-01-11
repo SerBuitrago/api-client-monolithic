@@ -33,61 +33,80 @@ import com.pragma.service.impl.ImageServiceImpl;
 
 public class ImageRestTest {
 
-	/*ImageRepository imageRepositoryMock = mock(ImageRepository.class);
+	ImageRepository imageRepositoryMock = mock(ImageRepository.class);
 	ClientRepository clientRepositoryMock = mock(ClientRepository.class);
 
 	ImageMapper imageMapperMock = mock(ImageMapper.class);
 	ClientMapper clientMapper = mock(ClientMapper.class);
 
-	ClientService clientService = new ClientServiceImpl(clientRepositoryMock, clientMapper, null);
-	ImageService imageService = new ImageServiceImpl(imageRepositoryMock, clientService);
+	ClientService clientService = new ClientServiceImpl(clientRepositoryMock, clientMapper);
+	ImageService imageService = new ImageServiceImpl(imageRepositoryMock, imageMapperMock, clientService);
 
-	ImageRest imageRest = new ImageRest(imageService, imageMapperMock);
+	ImageRest imageRest = new ImageRest(imageService);
 
-	Image imageMock = new Image(11L, 1L, "image01.jpg", "image01.jpg", "image01.jpg");
-	ImageDTO imageDTOMock = new ImageDTO(imageMock.getId(), imageMock.getIdClient(), imageMock.getContentType(),
-			imageMock.getFilename(), imageMock.getPhoto());
-	Client clientMock = new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga");
-	ClientDTO clientDTOMock = new ClientDTO(clientMock.getId(), clientMock.getName(), clientMock.getSubname(),
-			clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth());
+	/**
+	 * Other
+	 */
+	Image imageMock;
+	ImageDTO imageDTOMock;
+	Client clientMock;
+	ClientDTO clientDTOMock;
 
 	MockMultipartFile multipartFileMock;
 
-	List<Image> listMock = new ArrayList<>();
-	List<ImageDTO> listDTOMock = new ArrayList<>();
+	List<Image> listMock;
+	List<ImageDTO> listDTOMock;
 
 	@BeforeEach
 	void setUp() {
-		listMock.add(new Image(1L, 1L, "image01.jpg", "image01.jpg", "image01.jpg"));
-		listMock.add(new Image(2L, 21L, "image02.jpg", "image02.jpg", "image02.jpg"));
-		listMock.add(new Image(3L, 31L, "image03.jpg", "image03.jpg", "image03.jpg"));
-		listMock.add(new Image(4L, 41L, "image04.jpg", "image04.jpg", "image04.jpg"));
-		listMock.add(new Image(5L, 51L, "image05.jpg", "image05.jpg", "image05.jpg"));
+		/**
+		 * Fill
+		 */
+		imageMock = new Image(11L, 1L, "image01.jpg", "image01.jpg", "image01.jpg");
+		imageDTOMock = new ImageDTO(imageMock.getId(), imageMock.getIdClient(), imageMock.getContentType(),
+				imageMock.getFilename(), imageMock.getImage());
 
+		clientMock = new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga");
+		clientDTOMock = new ClientDTO(clientMock.getId(), clientMock.getName(), clientMock.getSubname(),
+				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth());
+		// Image
+		listMock = new ArrayList<>();
+		for (int i = 0; i < 5; i++)
+			listMock.add(new Image(1L + i, 1L + (i + 10), "image/jpg", "image0" + i + ".jpg", "AAAAAAA" + i));
+		// Image DTO
+		listDTOMock = new ArrayList<>();
 		listMock.forEach(e -> listDTOMock
-				.add(new ImageDTO(e.getId(), e.getIdClient(), e.getContentType(), e.getFilename(), e.getPhoto())));
-
+				.add(new ImageDTO(e.getId(), e.getIdClient(), e.getContentType(), e.getFilename(), e.getImage())));
+		// Optional
 		Optional<Image> optionalMock = Optional.of(listMock.get(0));
 		Optional<Client> optionalClientMock = Optional.of(clientMock);
-
+		/**
+		 * When
+		 */
+		// Client
 		when(clientRepositoryMock.findById(1L)).thenReturn(optionalClientMock);
-
-		when(imageMapperMock.toDomain(listMock.get(0))).thenReturn(listDTOMock.get(0));
-		when(imageMapperMock.toDomain(imageMock)).thenReturn(imageDTOMock);
-		when(imageMapperMock.toDomainList(listMock)).thenReturn(listDTOMock);
+		
+		// Mapper Image
+		when(imageMapperMock.toDTO(listMock.get(0))).thenReturn(listDTOMock.get(0));
+		when(imageMapperMock.toDTO(imageMock)).thenReturn(imageDTOMock);
+		when(clientMapper.toDTO(clientMock)).thenReturn(clientDTOMock);
+		when(imageMapperMock.toDTOList(listMock)).thenReturn(listDTOMock);
 		when(imageMapperMock.toEntity(imageDTOMock)).thenReturn(imageMock);
-
-		when(clientMapper.toDomain(clientMock)).thenReturn(clientDTOMock);
-
+		when(imageMapperMock.toEntity(listDTOMock.get(0))).thenReturn(listMock.get(0));
+		
+		// Image CRUD
 		when(imageRepositoryMock.findById(1L)).thenReturn(optionalMock);
 		when(imageRepositoryMock.findByClient(11L)).thenReturn(listMock.get(0));
 		when(imageRepositoryMock.findAll()).thenReturn(listMock);
 		when(imageRepositoryMock.save(imageMock)).thenReturn(imageMock);
 		when(imageRepositoryMock.save(listMock.get(0))).thenReturn(listMock.get(0));
-
+		
+		/**
+		 * Find Image
+		 */
+		String path = "C:\\Users\\sergio.barrios\\Pictures\\Sergio Buitrago\\271187632_6982951485056258_370057779146542727_n.jpg";
 		try {
-			try (FileInputStream fis = new FileInputStream(
-					"C:\\Users\\sergio.barrios\\Pictures\\Sergio Buitrago\\271187632_6982951485056258_370057779146542727_n.jpg")) {
+			try (FileInputStream fis = new FileInputStream(path)) {
 				this.multipartFileMock = new MockMultipartFile("file",
 						"271187632_6982951485056258_370057779146542727_n.jpg", MediaType.IMAGE_JPEG_VALUE,
 						fis.readAllBytes());
@@ -119,19 +138,17 @@ public class ImageRestTest {
 
 	@Test
 	void save() {
-		ResponseEntity<ImageDTO> response = imageRest.save(imageDTOMock, multipartFileMock);
+		ResponseEntity<ImageDTO> response = imageRest.save(imageDTOMock,
+		multipartFileMock);
 		assertNotNull(response.getBody());
 		assertThatNoException();
 	}
 
 	@Test
 	void update() {
-		ResponseEntity<ImageDTO> response = imageRest.update(listDTOMock.get(0), multipartFileMock);
+		ResponseEntity<ImageDTO> response = imageRest.update(listDTOMock.get(0),
+		multipartFileMock);
 		assertNotNull(response.getBody());
 		assertThatNoException();
 	}
-
-	@Test
-	void delete() {
-	}*/
 }
