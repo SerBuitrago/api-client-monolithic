@@ -47,7 +47,7 @@ public class ImageMongoDBRest {
 	
 	@PostMapping
 	public ResponseEntity<ImageMongoDBDTO> save(@ModelAttribute ImageMongoDBDTO imageMongoDB, @RequestParam("fileMongoDB") MultipartFile multipartFile) {
-		return ResponseEntity.status(HttpStatus.OK).body(imageMongoDBService.save(imageMongoDB, multipartFile));
+		return ResponseEntity.status(HttpStatus.CREATED).body(imageMongoDBService.save(imageMongoDB, multipartFile));
 	}
 	
 	@PutMapping

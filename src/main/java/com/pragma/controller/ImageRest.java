@@ -50,7 +50,7 @@ public class ImageRest {
 	@PostMapping
 	public ResponseEntity<ImageDTO> save(@ModelAttribute ImageDTO image,
 			@RequestParam("file") MultipartFile multipartFile) {
-		return ResponseEntity.status(HttpStatus.OK).body(imageService.save(image, multipartFile));
+		return ResponseEntity.status(HttpStatus.CREATED).body(imageService.save(image, multipartFile));
 	}
 
 	@PutMapping

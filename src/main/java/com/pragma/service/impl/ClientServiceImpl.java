@@ -34,14 +34,14 @@ public class ClientServiceImpl implements ClientService {
 	ImageMongoDBService imageMongoDBService;
 	@Autowired
 	ImageService imageService;
-	
+
 	public ClientServiceImpl() {
 	}
 
 	public ClientServiceImpl(ClientRepository clientEntityRepository) {
 		this.clientEntityRepository = clientEntityRepository;
 	}
-	
+
 	public ClientServiceImpl(ClientRepository clientEntityRepository, ClientMapper clientMapper) {
 		this.clientEntityRepository = clientEntityRepository;
 		this.clientMapper = clientMapper;
@@ -114,11 +114,8 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public boolean delete(Long id) {
 		ClientDTO client = findById(id);
-		ImageMongoDBDTO imageMongoDBDTO = imageMongoDBService.findByClient(client.getId());
-		ImageDTO imageDTO = imageService.findByClient(client.getId());
-		if (imageMongoDBDTO == null || imageDTO == null)
-			throw new PragmaException(
-					"No se ha eliminado el cliente con el id " + id + ", tiene asociado una imagen.");
+		if (!testImage(client.getId()))
+			throw new PragmaException("No se ha eliminado el cliente con el id " + id + ", tiene asociado una imagen.");
 		clientEntityRepository.deleteById(client.getId());
 		return true;
 	}
@@ -131,5 +128,21 @@ public class ClientServiceImpl implements ClientService {
 			LOGGER.error("testTypeDocument(String type, Long document)", e);
 		}
 		return client == null;
+	}
+
+	private boolean testImage(Long id) {
+		ImageMongoDBDTO imageMongoDBDTO = null;
+		ImageDTO imageDTO = null;
+		try {
+			imageMongoDBDTO = imageMongoDBService.findByClient(id);
+		} catch (PragmaException e) {
+			LOGGER.error("testImage(Long id): MongoDB", e);
+		}
+		try {
+			imageDTO = imageService.findByClient(id);
+		} catch (PragmaException e) {
+			LOGGER.error("testImage(Long id): MySQL", e);
+		}
+		return imageMongoDBDTO == null && imageDTO == null;
 	}
 }
