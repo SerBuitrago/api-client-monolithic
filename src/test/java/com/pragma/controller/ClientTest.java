@@ -53,13 +53,34 @@ public class ClientTest {
 				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth(), null, null);
 		
 		listMock = new ArrayList<>();
-		for (int i = 0; i < 5; i++)
-			listMock.add(new Client(1L + i, "Jose " + i, "Martinez " + i, "CC", 000001L + i, 10 + i % 2 == 0 ? 0 : 1,
-					"Bucaramanga " + i, null, null));
+		for (int i = 0; i < 5; i++) {
+			Client client = new Client();
+			client.setId(1L +i);
+			client.setName( "Jose " + i);
+			client.setSubname("Martinez " + i);
+			client.setType("CC");
+			client.setDocument(000001L + i);
+			client.setAge(10 + i);
+			client.setCityBirth("Bucaramanga " + i);
+			client.setImage(null);
+			client.setImageMongoDB(null);
+			listMock.add(client);
+		}
 		
 		listDTOMock = new ArrayList<>();
-		listMock.forEach(e -> listDTOMock.add(new ClientDTO(e.getId(), e.getName(), e.getSubname(), e.getType(),
-				e.getDocument(), e.getAge(), e.getCityBirth(), null, null)));
+		listMock.forEach(e -> {
+			ClientDTO client = new ClientDTO();
+			client.setId(e.getId());
+			client.setName(e.getName());
+			client.setSubname(e.getSubname());
+			client.setType("CC");
+			client.setDocument(e.getDocument());
+			client.setAge(e.getAge());
+			client.setCityBirth(e.getCityBirth());
+			client.setImageDTO(null);
+			client.setImageMongoDBDTO(null);
+			listDTOMock.add(client);
+		});
 
 		Optional<Client> optionalMock = Optional.of(listMock.get(0));
 

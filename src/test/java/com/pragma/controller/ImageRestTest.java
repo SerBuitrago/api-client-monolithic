@@ -8,6 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,8 +59,9 @@ public class ImageRestTest {
 	List<Image> listMock;
 	List<ImageDTO> listDTOMock;
 
+	@SuppressWarnings("resource")
 	@BeforeEach
-	void setUp() {
+	void setUp() throws FileNotFoundException, IOException {
 		/**
 		 * Fill
 		 */
@@ -72,12 +75,28 @@ public class ImageRestTest {
 				null);
 		// Image
 		listMock = new ArrayList<>();
-		for (int i = 0; i < 5; i++)
-			listMock.add(new Image(1L + i, 1L + (i + 10), "image/jpg", "image0" + i + ".jpg", "AAAAAAA" + i));
+		for (int i = 0; i < 5; i++) {
+			Image image = new Image();
+			image.setId(1L + i);
+			image.setIdClient(1L + (i + 10));
+			image.setContentType("image/jpg");
+			image.setFilename("image0" + i + ".jpg");
+			image.setImage("AAAAAAA" + i);
+			listMock.add(image);
+		}
+		
 		// Image DTO
 		listDTOMock = new ArrayList<>();
-		listMock.forEach(e -> listDTOMock
-				.add(new ImageDTO(e.getId(), e.getIdClient(), e.getContentType(), e.getFilename(), e.getImage())));
+		listMock.forEach(e -> {
+			ImageDTO image = new ImageDTO();
+			image.setId(e.getId());
+			image.setIdClient(e.getIdClient());
+			image.setContentType(e.getContentType());
+			image.setFilename(e.getFilename());
+			image.setImage(e.getImage());
+			listDTOMock.add(image);
+		});
+		
 		// Optional
 		Optional<Image> optionalMock = Optional.of(listMock.get(0));
 		Optional<Client> optionalClientMock = Optional.of(clientMock);
@@ -106,16 +125,9 @@ public class ImageRestTest {
 		 * Find Image
 		 */
 		String path = "C:\\Users\\sergio.barrios\\Pictures\\Sergio Buitrago\\271187632_6982951485056258_370057779146542727_n.jpg";
-		try {
-			try (FileInputStream fis = new FileInputStream(path)) {
-				this.multipartFileMock = new MockMultipartFile("file",
-						"271187632_6982951485056258_370057779146542727_n.jpg", MediaType.IMAGE_JPEG_VALUE,
-						fis.readAllBytes());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.multipartFileMock = null;
-		}
+		this.multipartFileMock = new MockMultipartFile("file",
+				"271187632_6982951485056258_370057779146542727_n.jpg", MediaType.IMAGE_JPEG_VALUE,
+				new FileInputStream(path).readAllBytes());
 	}
 
 	@Test

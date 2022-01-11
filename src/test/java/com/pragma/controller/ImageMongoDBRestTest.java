@@ -8,6 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +60,7 @@ public class ImageMongoDBRestTest {
 	List<ImageMongoDBDTO> listDTOMock;
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws FileNotFoundException, IOException {
 		/**
 		 * Fill
 		 */
@@ -71,12 +73,27 @@ public class ImageMongoDBRestTest {
 				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth(), null, null);
 		// ImageMongoDB
 		listMock = new ArrayList<>();
-		for (int i = 0; i < 5; i++)
-			listMock.add(new ImageMongoDB(""+ (1 + i), 1L + (i + 11), "ImageMongoDB/jpg", "ImageMongoDB0" + i + ".jpg", "AAAAAAA" + i));
+		for (int i = 0; i < 5; i++) {
+			ImageMongoDB image = new ImageMongoDB();
+			image.set_id(""+ (1 + i));
+			image.setIdClient(1L + (i + 11));
+			image.setContentType("ImageMongoDB/jpg");
+			image.setFilename("ImageMongoDB0" + i + ".jpg");
+			image.setImage("AAAAAAA" + i);
+			listMock.add(image);
+		}
 		// ImageMongoDB DTO
 		listDTOMock = new ArrayList<>();
-		listMock.forEach(e -> listDTOMock
-				.add(new ImageMongoDBDTO(e.get_id(), e.getIdClient(), e.getContentType(), e.getFilename(), e.getImage())));
+		listMock.forEach(e -> {
+			ImageMongoDBDTO image = new ImageMongoDBDTO();
+			image.set_id(e.get_id());
+			image.setIdClient(e.getIdClient());
+			image.setContentType(e.getContentType());
+			image.setFilename(e.getFilename());
+			image.setImage(e.getImage());
+			listDTOMock.add(image);
+		});
+		
 		// Optional
 		Optional<ImageMongoDB> optionalMock = Optional.of(listMock.get(0));
 		Optional<Client> optionalClientMock = Optional.of(clientMock);
@@ -105,16 +122,9 @@ public class ImageMongoDBRestTest {
 		 * Find ImageMongoDB
 		 */
 		String path = "C:\\Users\\sergio.barrios\\Pictures\\Sergio Buitrago\\271187632_6982951485056258_370057779146542727_n.jpg";
-		try {
-			try (FileInputStream fis = new FileInputStream(path)) {
-				this.multipartFileMock = new MockMultipartFile("file",
-						"271187632_6982951485056258_370057779146542727_n.jpg", MediaType.IMAGE_JPEG_VALUE,
-						fis.readAllBytes());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			this.multipartFileMock = null;
-		}
+		this.multipartFileMock = new MockMultipartFile("file",
+				"271187632_6982951485056258_370057779146542727_n.jpg", MediaType.IMAGE_JPEG_VALUE,
+				new FileInputStream(path).readAllBytes());
 	}
 
 	@Test
