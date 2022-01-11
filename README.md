@@ -1,0 +1,1 @@
+# pragma-api-client-monolithic
