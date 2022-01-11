@@ -66,9 +66,10 @@ public class ImageRestTest {
 		imageDTOMock = new ImageDTO(imageMock.getId(), imageMock.getIdClient(), imageMock.getContentType(),
 				imageMock.getFilename(), imageMock.getImage());
 
-		clientMock = new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga");
+		clientMock = new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga", null, null);
 		clientDTOMock = new ClientDTO(clientMock.getId(), clientMock.getName(), clientMock.getSubname(),
-				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth());
+				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth(), null,
+				null);
 		// Image
 		listMock = new ArrayList<>();
 		for (int i = 0; i < 5; i++)
@@ -85,7 +86,7 @@ public class ImageRestTest {
 		 */
 		// Client
 		when(clientRepositoryMock.findById(1L)).thenReturn(optionalClientMock);
-		
+
 		// Mapper Image
 		when(imageMapperMock.toDTO(listMock.get(0))).thenReturn(listDTOMock.get(0));
 		when(imageMapperMock.toDTO(imageMock)).thenReturn(imageDTOMock);
@@ -93,14 +94,14 @@ public class ImageRestTest {
 		when(imageMapperMock.toDTOList(listMock)).thenReturn(listDTOMock);
 		when(imageMapperMock.toEntity(imageDTOMock)).thenReturn(imageMock);
 		when(imageMapperMock.toEntity(listDTOMock.get(0))).thenReturn(listMock.get(0));
-		
+
 		// Image CRUD
 		when(imageRepositoryMock.findById(1L)).thenReturn(optionalMock);
 		when(imageRepositoryMock.findByClient(11L)).thenReturn(listMock.get(0));
 		when(imageRepositoryMock.findAll()).thenReturn(listMock);
 		when(imageRepositoryMock.save(imageMock)).thenReturn(imageMock);
 		when(imageRepositoryMock.save(listMock.get(0))).thenReturn(listMock.get(0));
-		
+
 		/**
 		 * Find Image
 		 */
@@ -138,16 +139,14 @@ public class ImageRestTest {
 
 	@Test
 	void save() {
-		ResponseEntity<ImageDTO> response = imageRest.save(imageDTOMock,
-		multipartFileMock);
+		ResponseEntity<ImageDTO> response = imageRest.save(imageDTOMock, multipartFileMock);
 		assertNotNull(response.getBody());
 		assertThatNoException();
 	}
 
 	@Test
 	void update() {
-		ResponseEntity<ImageDTO> response = imageRest.update(listDTOMock.get(0),
-		multipartFileMock);
+		ResponseEntity<ImageDTO> response = imageRest.update(listDTOMock.get(0), multipartFileMock);
 		assertNotNull(response.getBody());
 		assertThatNoException();
 	}

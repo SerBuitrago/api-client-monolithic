@@ -35,6 +35,11 @@ public class ClientRest {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findById(id));
 	}
 	
+	@GetMapping(value = {"/find/image/id/{id}" })
+	public ResponseEntity<ClientDTO> findClientAndImageById(@PathVariable("id") Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(clientService.findClientAndImageById(id));
+	}
+	
 	@GetMapping(value = { "/find/type/{type}/document/{document}" })
 	public ResponseEntity<ClientDTO> findByTypeAndDocument(@PathVariable("type") String type, @PathVariable("document") Long document) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.findByTypeAndDocument(type, document));

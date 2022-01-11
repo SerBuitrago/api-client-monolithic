@@ -66,9 +66,9 @@ public class ImageMongoDBRestTest {
 		imageMongoDBDTOMock = new ImageMongoDBDTO(imageMongoDBMock.get_id(), imageMongoDBMock.getIdClient(), imageMongoDBMock.getContentType(),
 				imageMongoDBMock.getFilename(), imageMongoDBMock.getImage());
 
-		clientMock = new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga");
+		clientMock = new Client(1L, "Jose", "Martinez", "CC", 000001L, 10, "Bucaramanga", null, null);
 		clientDTOMock = new ClientDTO(clientMock.getId(), clientMock.getName(), clientMock.getSubname(),
-				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth());
+				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth(), null, null);
 		// ImageMongoDB
 		listMock = new ArrayList<>();
 		for (int i = 0; i < 5; i++)

@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,4 +32,9 @@ public class Client {
 	
 	@Column(name = "city_birth", nullable = false, length = 100)
 	private String cityBirth;
+	
+	@Transient
+	private ImageMongoDB imageMongoDB;
+	@Transient
+	private Image image;	
 }

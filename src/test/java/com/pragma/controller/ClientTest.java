@@ -48,18 +48,18 @@ public class ClientTest {
 		/**
 		 * Fill
 		 */
-		clientMock = new Client(100L, "Danna", "Mendoza", "TI", 123456789L, 10, "Bucaramanga");
+		clientMock = new Client(100L, "Danna", "Mendoza", "TI", 123456789L, 10, "Bucaramanga", null, null);
 		clientDTOMock = new ClientDTO(clientMock.getId(), clientMock.getName(), clientMock.getSubname(),
-				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth());
+				clientMock.getType(), clientMock.getDocument(), clientMock.getAge(), clientMock.getCityBirth(), null, null);
 		
 		listMock = new ArrayList<>();
 		for (int i = 0; i < 5; i++)
 			listMock.add(new Client(1L + i, "Jose " + i, "Martinez " + i, "CC", 000001L + i, 10 + i % 2 == 0 ? 0 : 1,
-					"Bucaramanga " + i));
+					"Bucaramanga " + i, null, null));
 		
 		listDTOMock = new ArrayList<>();
 		listMock.forEach(e -> listDTOMock.add(new ClientDTO(e.getId(), e.getName(), e.getSubname(), e.getType(),
-				e.getDocument(), e.getAge(), e.getCityBirth())));
+				e.getDocument(), e.getAge(), e.getCityBirth(), null, null)));
 
 		Optional<Client> optionalMock = Optional.of(listMock.get(0));
 

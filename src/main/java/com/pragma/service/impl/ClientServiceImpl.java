@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.pragma.mapper.ClientMapper;
 import com.pragma.models.dto.ClientDTO;
-import com.pragma.models.dto.ImageDTO;
-import com.pragma.models.dto.ImageMongoDBDTO;
 import com.pragma.models.entity.validate.ClientValidate;
 import com.pragma.repository.ClientRepository;
 import com.pragma.service.ClientService;
@@ -19,7 +17,10 @@ import com.pragma.service.ImageMongoDBService;
 import com.pragma.service.ImageService;
 import com.pragma.util.exception.PragmaException;
 
+import lombok.NoArgsConstructor;
+
 @Service
+@NoArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientServiceImpl.class);
@@ -35,8 +36,6 @@ public class ClientServiceImpl implements ClientService {
 	@Autowired
 	ImageService imageService;
 
-	public ClientServiceImpl() {
-	}
 
 	public ClientServiceImpl(ClientRepository clientEntityRepository) {
 		this.clientEntityRepository = clientEntityRepository;
@@ -59,6 +58,13 @@ public class ClientServiceImpl implements ClientService {
 	public ClientDTO findById(Long id) {
 		return clientMapper.toDTO(clientEntityRepository.findById(id)
 				.orElseThrow(() -> new PragmaException("No se ha encontrado ningun cliente con el id " + id + ".")));
+	}
+	
+	@Override
+	public ClientDTO findClientAndImageById(Long id) {
+		ClientDTO clientDTO = findById(id);
+		testImage(id, clientDTO);
+		return clientDTO;
 	}
 
 	@Override
@@ -114,7 +120,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public boolean delete(Long id) {
 		ClientDTO client = findById(id);
-		if (!testImage(client.getId()))
+		if (!testImage(client.getId(), client))
 			throw new PragmaException("No se ha eliminado el cliente con el id " + id + ", tiene asociado una imagen.");
 		clientEntityRepository.deleteById(client.getId());
 		return true;
@@ -130,19 +136,17 @@ public class ClientServiceImpl implements ClientService {
 		return client == null;
 	}
 
-	private boolean testImage(Long id) {
-		ImageMongoDBDTO imageMongoDBDTO = null;
-		ImageDTO imageDTO = null;
+	private boolean testImage(Long id, ClientDTO clientDTO) {
 		try {
-			imageMongoDBDTO = imageMongoDBService.findByClient(id);
+			clientDTO.setImageMongoDBDTO(imageMongoDBService.findByClient(id));
 		} catch (PragmaException e) {
 			LOGGER.error("testImage(Long id): MongoDB", e);
 		}
 		try {
-			imageDTO = imageService.findByClient(id);
+			clientDTO.setImageDTO(imageService.findByClient(id));
 		} catch (PragmaException e) {
 			LOGGER.error("testImage(Long id): MySQL", e);
 		}
-		return imageMongoDBDTO == null && imageDTO == null;
+		return clientDTO.getImageDTO() == null && clientDTO.getImageMongoDBDTO() == null;
 	}
 }

@@ -8,6 +8,8 @@ public interface ClientService {
 	
 	ClientDTO findById(Long id);
 	
+	ClientDTO findClientAndImageById(Long id);
+	
 	ClientDTO findByTypeAndDocument(String type, Long document);
 	
 	List<ClientDTO> findAll();
