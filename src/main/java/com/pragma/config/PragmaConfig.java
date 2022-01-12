@@ -1,4 +1,4 @@
-package com.pragma;
+package com.pragma.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +10,6 @@ import lombok.Setter;
 @Configuration
 @ConfigurationProperties("spring.datasource")
 @NoArgsConstructor
-@Getter
-@Setter
 public class PragmaConfig {
 
 }

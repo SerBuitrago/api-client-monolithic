@@ -2,6 +2,8 @@ package com.pragma.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pragma.models.dto.ClientDTO;
 import com.pragma.service.ClientService;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/client")
 @CrossOrigin(origins = "*")
+@Api("Client Service")
 public class ClientRest {
 
 	@Autowired
@@ -61,12 +66,12 @@ public class ClientRest {
 	}
 	
 	@PostMapping
-	public ResponseEntity<ClientDTO> save(@RequestBody ClientDTO client) {
+	public ResponseEntity<ClientDTO> save(@Valid @RequestBody ClientDTO client) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(client));
 	}
 	
 	@PutMapping
-	public ResponseEntity<ClientDTO> update(@RequestBody ClientDTO client) {
+	public ResponseEntity<ClientDTO> update(@Valid @RequestBody ClientDTO client) {
 		return ResponseEntity.status(HttpStatus.OK).body(clientService.update(client));
 	}
 	

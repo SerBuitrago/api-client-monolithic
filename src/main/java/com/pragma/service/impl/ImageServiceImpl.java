@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pragma.mapper.ImageMapper;
 import com.pragma.models.dto.ImageDTO;
-import com.pragma.models.entity.validate.ImageValidate;
 import com.pragma.repository.ImageRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageService;
@@ -65,7 +64,6 @@ public class ImageServiceImpl implements ImageService {
 
 	@Override
 	public ImageDTO save(ImageDTO image, MultipartFile multipartFile) {
-		ImageValidate.message(image);
 		if (!testClient(image.getIdClient()))
 			throw new PragmaException("El cliente con el id " + image.getIdClient() + " ya tiene una imagen asignada.");
 		clientService.findById(image.getIdClient());
@@ -74,7 +72,6 @@ public class ImageServiceImpl implements ImageService {
 
 	@Override
 	public ImageDTO update(ImageDTO image, MultipartFile multipartFile) {
-		ImageValidate.message(image);
 		ImageDTO aux = findById(image.getId());
 		if (aux.getIdClient() != image.getIdClient()) {
 			clientService.findById(image.getIdClient());

@@ -1,4 +1,4 @@
-package com.pragma.util;
+package com.pragma.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

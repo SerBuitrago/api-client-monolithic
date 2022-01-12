@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pragma.mapper.ImageMongoDBMapper;
 import com.pragma.models.dto.ImageMongoDBDTO;
-import com.pragma.models.entity.validate.ImageMongoDBValidate;
 import com.pragma.repository.ImageMongoDBRepository;
 import com.pragma.service.ClientService;
 import com.pragma.service.ImageMongoDBService;
@@ -66,7 +65,6 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Override
 	public ImageMongoDBDTO save(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
-		ImageMongoDBValidate.message(imageMongoDB);
 		if (!testClient(imageMongoDB.getIdClient()))
 			throw new PragmaException(
 					"El cliente con el id " + imageMongoDB.getIdClient() + " ya tiene una imagen asignada.");
@@ -76,7 +74,6 @@ public class ImageMongoDBServiceImpl implements ImageMongoDBService {
 
 	@Override
 	public ImageMongoDBDTO update(ImageMongoDBDTO imageMongoDB, MultipartFile multipartFile) {
-		ImageMongoDBValidate.message(imageMongoDB);
 		ImageMongoDBDTO aux = findById(imageMongoDB.get_id());
 		if (aux.getIdClient() != imageMongoDB.getIdClient()) {
 			clientService.findById(imageMongoDB.getIdClient());
