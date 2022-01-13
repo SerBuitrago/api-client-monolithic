@@ -7,6 +7,8 @@ información personal (**MySQL**) y subir una foto de perfil (**MySQL** y **Mong
 
 
 
+<img src="https://drive.google.com/file/d/1pLf5TnveYQBYgMaMaiYD1FyUuxIGv8No/view?usp=sharing">
+
 ## Rutas
 
 `Host:` http://localhost:8090
