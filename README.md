@@ -7,7 +7,7 @@ información personal (**MySQL**) y subir una foto de perfil (**MySQL** y **Mong
 
 
 
-<img src="https://drive.google.com/file/d/1pLf5TnveYQBYgMaMaiYD1FyUuxIGv8No/view?usp=sharing">
+<img src="https://lh3.googleusercontent.com/6IKtWsR8q2GcMXHsd5pLO6jTObac9GtNwht0tFhoAtNQVtbMV2y-nLAZA5_0daCfAmo4dKR5UlBuUt9SCINa7Yci9G2wa3S06mMo_-yrzx2DfYn-FZLDExi53OtkSNWrX3WvVnZ125bQRK-iIrSRA3ewhN-lwEp-hLeqYOqDCw7IetenEKik0HkyDuk-84jfE6KpqdkamgxVudaNkqw7WQcBaetK9CJixCsibKwrjjWXhKSA36vtzApjbdkdKq_PlcIBMlusq4K2tLyKFPSAJpaMl9OekKHXb6Udvr22JaJwYzEYigqx7-ju5DrdW6YC_bwvBPO_WCZJ1KGM1KjZt6YLXSJTSLcAHXVn53hCldjKPpcJbkuoP4L8SMLnCtm6SV47g7kCgMpMTMoffzpKLQq9Q63BSvlV2OCxbo1JfVZ0wXqHsC9c2uTA9D6o4Y46LF1uXqTpfxR9O2RkWYGZd2aJPaz1FbaQW7PgSSyOanmnvvtgPdVm5KIKvFBhvoTOnSmBfN02FtrQY_GmOX-0RvR959OYf-1uLe3roNFGF4f2mPlEtz6Vk3D6DyZY5erYEpLif4HoHPciT0auhGWoGaFVS6iVgNlnM6ZJ7UQyABbPK8BIjHwUqZS6O8wezdV5T1lyZNz6os4-rWc8vSFHChsEvGJsYdESun_sDwy3ML6QSFWHY1nUVVsPnYkcN7bHDJyxQwH0QGY4sCk68V8BKGE=w1021-h531-no?authuser=0">
 
 ## Rutas
 
